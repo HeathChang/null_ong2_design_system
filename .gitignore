@@ -1,0 +1,26 @@
+# AI tool configs (개인 환경 — .ruler/는 공유)
+CLAUDE.md
+.cursorrules
+
+# 개인 목표/로드맵 문서
+objective.md
+
+# 의존성
+node_modules/
+
+# 빌드 산출물
+dist/
+storybook-static/
+
+# 테스트 커버리지
+coverage/
+
+# 캐시
+.cache/
+.turbo/
+
+# 로그
+*.log
+
+# OS
+.DS_Store

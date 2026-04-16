@@ -1,0 +1,31 @@
+# 소스 코드
+src/
+
+# 테스트
+**/*.test.ts
+**/*.test.tsx
+jest.config.ts
+jest.setup.ts
+
+# Storybook
+.storybook/
+storybook-static/
+
+# 내부 문서
+docs/
+
+# 개발 설정
+tsup.config.ts
+tsconfig.json
+.eslintrc*
+.prettierrc*
+
+# 빌드 캐시
+.turbo/
+.cache/
+
+# 기타
+node_modules/
+.DS_Store
+*.log
+coverage/
