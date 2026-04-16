@@ -1,0 +1,7 @@
+/**
+ * 디자인 시스템 글로벌 스타일 엔트리포인트
+ * 이 파일은 src/index.ts에서 import되어
+ * tsup의 injectStyle로 자동 번들링된다.
+ */
+@import './tokens.css';
+@import './components.css';
