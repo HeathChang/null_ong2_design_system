@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(npm install *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(npm publish *)",
+      "Bash(awk '{printf \"%-25s %8d bytes  \\(%6.1f KB\\)\\\\\\\\n\", $9, $5, $5/1024}')"
     ]
   }
 }

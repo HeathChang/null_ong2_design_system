@@ -10,5 +10,8 @@ export type { RadioProps } from './Radio';
 export { Select } from './Select';
 export type { SelectProps, SelectOption } from './Select';
 
+export { Switch } from './Switch';
+export type { SwitchProps } from './Switch';
+
 export { Textarea } from './Textarea';
 export type { TextareaProps } from './Textarea';

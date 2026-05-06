@@ -1,6 +1,21 @@
 # null_ong2-design-system
 
-프로덕션 레디 React 디자인 시스템 라이브러리. 설치 즉시 사용 가능 (Zero-config).
+프로덕션 레디 React 디자인 시스템 라이브러리.
+
+## 📖 공식 문서 사이트
+
+라이브 데모, 복사 가능한 코드 스니펫, 컴포넌트 상세 사용법은 공식 문서 사이트에서 확인하세요:
+
+**👉 [https://null-ong2-design-system-docs.vercel.app/en](https://null-ong2-design-system-docs.vercel.app/en)**
+
+- 모든 컴포넌트의 라이브 예시 + 코드 1클릭 복사
+- Props 테이블 (타입, 기본값, 설명)
+- 다국어 지원 (한국어 / English / 中文)
+- 디자인 토큰 시각화
+
+> 본 README는 빠른 참고용입니다. 상세한 사용법과 예시는 위 사이트를 참고해주세요.
+
+---
 
 ## 설치
 
@@ -16,7 +31,20 @@ npm install react react-dom
 
 ## 빠른 시작
 
-별도의 CSS import 없이 바로 사용 가능합니다. 스타일은 자동으로 주입됩니다.
+### 1. 스타일 시트 import (앱 진입점에서 1회)
+
+```tsx
+// app/layout.tsx (Next.js App Router)
+// 또는 _app.tsx (Next.js Pages Router)
+// 또는 main.tsx (Vite/CRA)
+import 'null_ong2-design-system/styles.css';
+```
+
+> **v0.2.2부터 변경**: 이전엔 자동 주입이었으나 SSR(Next.js App Router 등)에서 FOUC 발생 → 별도 CSS 파일을 export하도록 수정. 빌드 도구가 SSR HTML에 자동으로 인라인합니다.
+
+### 2. 컴포넌트 사용
+
+React Server Component 환경(Next.js App Router)에서도 import 가능합니다 — 패키지 내부에 `"use client"` 지시자가 포함되어 있습니다.
 
 ```tsx
 import { Button, Input, Alert, Stack } from 'null_ong2-design-system';
@@ -51,8 +79,11 @@ function App() {
 | **Layout** | `Box`, `Flex`, `Stack`, `Grid`, `Container` |
 | **Typography** | `Text`, `Heading`, `Label` |
 | **Core UI** | `Button` |
-| **Form** | `Input`, `Textarea`, `Checkbox`, `Radio`, `Select` |
+| **Form** | `Input`, `Textarea`, `Checkbox`, `Radio`, `Select`, `Switch` |
 | **Feedback** | `Spinner`, `Skeleton`, `Alert` |
+| **Data Display** | `Avatar`, `Badge`, `Carousel` |
+| **Navigation** | `Tabs` |
+| **Overlay** | `Modal`, `Tooltip`, `DropdownMenu`, `Toast` (`ToastProvider` + `useToast`) |
 
 ---
 
@@ -807,6 +838,296 @@ import { Alert } from 'null_ong2-design-system';
   비밀번호가 곧 만료됩니다. 변경해주세요.
 </Alert>
 ```
+
+---
+
+## Switch (Form)
+
+ON/OFF 즉시 반영 토글. Checkbox와 달리 설정 화면에 적합.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `id` | `string` | — | switch id |
+| `label` | `string` | — | 레이블 텍스트 |
+| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | 크기 |
+| `checked` | `boolean` | — | 상태 (controlled) |
+| `defaultChecked` | `boolean` | — | 초기 상태 (uncontrolled) |
+| `onChange` | `(checked: boolean, event) => void` | — | 변경 핸들러 |
+| `disabled` | `boolean` | — | 비활성화 |
+
+```tsx
+import { Switch } from 'null_ong2-design-system';
+
+const [enabled, setEnabled] = useState(false);
+<Switch id="notify" label="알림 받기" checked={enabled} onChange={setEnabled} />
+```
+
+---
+
+## Avatar (Data Display)
+
+이미지 + 이니셜 fallback 아바타.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `src` | `string` | — | 이미지 URL |
+| `name` | `string` | — | 이름 (alt + 이니셜 fallback에 사용) |
+| `alt` | `string` | — | 이미지 alt (지정 시 우선) |
+| `size` | `'xs'` \| `'sm'` \| `'md'` \| `'lg'` \| `'xl'` | `'md'` | 크기 |
+| `shape` | `'circle'` \| `'square'` | `'circle'` | 형태 |
+
+```tsx
+import { Avatar } from 'null_ong2-design-system';
+
+<Avatar src="/me.jpg" name="홍길동" />
+<Avatar name="John Doe" size="lg" />        // 이미지 없으면 "JD" 표시
+<Avatar src="/broken.jpg" name="Jane" />    // 로드 실패 시 "JA"로 fallback
+```
+
+---
+
+## Badge (Data Display)
+
+상태/카운트 표시 라벨.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `variant` | `'neutral'` \| `'primary'` \| `'success'` \| `'warning'` \| `'danger'` \| `'info'` | `'neutral'` | 시각 스타일 |
+| `size` | `'sm'` \| `'md'` | `'md'` | 크기 |
+| `dot` | `boolean` | `false` | 점 형태 (텍스트 없이 알림 표시) |
+
+```tsx
+import { Badge } from 'null_ong2-design-system';
+
+<Badge variant="success">활성</Badge>
+<Badge variant="danger">99+</Badge>
+<Badge variant="danger" dot />              // 빨간 점만 표시
+```
+
+---
+
+## Carousel (Data Display)
+
+슬라이드를 한 번에 하나씩 보여주는 캐루셀.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `items` | `ReactNode[]` | **필수** | 슬라이드 콘텐츠 배열 |
+| `index` | `number` | — | 현재 인덱스 (controlled) |
+| `defaultIndex` | `number` | `0` | 초기 인덱스 |
+| `onChange` | `(index: number) => void` | — | 변경 핸들러 |
+| `autoPlayInterval` | `number` | `0` | 자동 재생 간격(ms). 0이면 비활성 |
+| `loop` | `boolean` | `true` | 무한 순환 |
+| `showArrows` | `boolean` | `true` | 좌우 화살표 표시 |
+| `showIndicators` | `boolean` | `true` | 점 인디케이터 표시 |
+
+```tsx
+import { Carousel } from 'null_ong2-design-system';
+
+<Carousel
+  items={[
+    <img src="/1.jpg" alt="배너 1" />,
+    <img src="/2.jpg" alt="배너 2" />,
+    <img src="/3.jpg" alt="배너 3" />,
+  ]}
+  autoPlayInterval={3000}
+/>
+```
+
+---
+
+## Tabs (Navigation)
+
+컴파운드 컴포넌트 패턴 기반 탭. 키보드 화살표 내비게이션 지원.
+
+| 컴포넌트 | 역할 |
+|----------|------|
+| `Tabs.Root` | 컨텍스트 제공자 (`defaultValue` / `value` / `onChange` / `orientation`) |
+| `Tabs.List` | 탭 트리거 컨테이너 (role="tablist") |
+| `Tabs.Trigger` | 개별 탭 버튼 (`value` / `disabled`) |
+| `Tabs.Panel` | 매칭되는 트리거가 활성일 때 렌더 (`value`) |
+
+```tsx
+import { Tabs } from 'null_ong2-design-system';
+
+<Tabs.Root defaultValue="profile">
+  <Tabs.List aria-label="계정 섹션">
+    <Tabs.Trigger value="profile">프로필</Tabs.Trigger>
+    <Tabs.Trigger value="account">계정</Tabs.Trigger>
+    <Tabs.Trigger value="notifications">알림</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Panel value="profile">프로필 화면</Tabs.Panel>
+  <Tabs.Panel value="account">계정 화면</Tabs.Panel>
+  <Tabs.Panel value="notifications">알림 설정</Tabs.Panel>
+</Tabs.Root>
+
+// 세로 탭
+<Tabs.Root defaultValue="overview" orientation="vertical">...</Tabs.Root>
+```
+
+---
+
+## Modal (Overlay)
+
+오버레이 다이얼로그. 포커스 트랩 + ESC 닫기 + 오버레이 클릭 닫기 자동 적용.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `isOpen` | `boolean` | **필수** | 열림 상태 |
+| `onClose` | `() => void` | **필수** | 닫기 핸들러 |
+| `title` | `string` | — | 제목 |
+| `children` | `ReactNode` | **필수** | 본문 |
+| `footer` | `ReactNode` | — | 푸터 (버튼 그룹 등) |
+| `size` | `'sm'` \| `'md'` \| `'lg'` \| `'xl'` | `'md'` | 크기 |
+| `closeOnOverlayClick` | `boolean` | `true` | 오버레이 클릭으로 닫기 |
+| `closeOnEscape` | `boolean` | `true` | ESC로 닫기 |
+| `showCloseButton` | `boolean` | `true` | 닫기 버튼 표시 |
+
+```tsx
+import { Modal, Button } from 'null_ong2-design-system';
+
+const [open, setOpen] = useState(false);
+
+<Button onClick={() => setOpen(true)}>삭제</Button>
+
+<Modal
+  isOpen={open}
+  onClose={() => setOpen(false)}
+  title="삭제 확인"
+  footer={
+    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+      <Button variant="secondary" onClick={() => setOpen(false)}>취소</Button>
+      <Button variant="danger" onClick={handleDelete}>삭제</Button>
+    </div>
+  }
+>
+  정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+</Modal>
+```
+
+---
+
+## Tooltip (Overlay)
+
+호버/포커스 시 부가 설명 표시. `@floating-ui/react` 기반 자동 위치 계산.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `content` | `ReactNode` | **필수** | 툴팁 내용 |
+| `children` | `ReactElement` | **필수** | 트리거 요소 (단일 element) |
+| `placement` | `Placement` | `'top'` | 위치 (top/bottom/left/right + start/end) |
+| `delay` | `number` | `200` | 표시 지연(ms) |
+| `disabled` | `boolean` | `false` | 비활성화 |
+
+```tsx
+import { Tooltip, Button } from 'null_ong2-design-system';
+
+<Tooltip content="저장합니다 (Cmd+S)">
+  <Button>저장</Button>
+</Tooltip>
+
+<Tooltip content="설명" placement="right">
+  <Button variant="ghost">정보</Button>
+</Tooltip>
+```
+
+---
+
+## DropdownMenu (Overlay)
+
+클릭 트리거 드롭다운 메뉴.
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `trigger` | `ReactElement` | **필수** | 트리거 요소 |
+| `items` | `DropdownMenuItem[]` | **필수** | 메뉴 항목 목록 |
+| `placement` | `Placement` | `'bottom-start'` | 메뉴 위치 |
+
+```ts
+interface DropdownMenuItem {
+  key: string;
+  label: ReactNode;
+  onSelect?: () => void;
+  disabled?: boolean;
+  destructive?: boolean;  // 빨간 텍스트
+}
+```
+
+```tsx
+import { DropdownMenu, Button } from 'null_ong2-design-system';
+
+<DropdownMenu
+  trigger={<Button variant="secondary">옵션</Button>}
+  items={[
+    { key: 'edit', label: '수정', onSelect: handleEdit },
+    { key: 'duplicate', label: '복제', onSelect: handleDuplicate },
+    { key: 'delete', label: '삭제', onSelect: handleDelete, destructive: true },
+  ]}
+/>
+```
+
+---
+
+## Toast (Overlay)
+
+전역 알림 시스템. **앱 루트에 `<ToastProvider>`를 한 번 감싸고**, `useToast()` 훅으로 사용.
+
+### 1. Provider 설정
+
+```tsx
+import { ToastProvider } from 'null_ong2-design-system';
+
+function App() {
+  return (
+    <ToastProvider position="bottom-right" maxToasts={5}>
+      <YourApp />
+    </ToastProvider>
+  );
+}
+```
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|-----|--------|------|
+| `position` | `'top-left'` \| `'top-right'` \| `'top-center'` \| `'bottom-left'` \| `'bottom-right'` \| `'bottom-center'` | `'bottom-right'` | 표시 위치 |
+| `maxToasts` | `number` | `5` | 동시 표시 최대 개수 |
+
+### 2. 사용
+
+```tsx
+import { useToast } from 'null_ong2-design-system';
+
+function SaveButton() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={async () => {
+        try {
+          await save();
+          toast.success('저장되었습니다');
+        } catch {
+          toast.danger('저장에 실패했습니다', { duration: 5000 });
+        }
+      }}
+    >
+      저장
+    </Button>
+  );
+}
+```
+
+#### Toast API
+
+| 메서드 | 설명 |
+|--------|------|
+| `toast.show(message, options?)` | 일반 토스트 |
+| `toast.success(message, options?)` | 성공 |
+| `toast.warning(message, options?)` | 경고 |
+| `toast.danger(message, options?)` | 오류 |
+| `toast.info(message, options?)` | 정보 |
+| `toast.dismiss(id)` | 특정 토스트 닫기 (id는 show 반환값) |
+
+`options.duration` — 자동 소멸 시간(ms). 기본 3000. **0**이면 수동 닫기만 가능.
 
 ---
 
