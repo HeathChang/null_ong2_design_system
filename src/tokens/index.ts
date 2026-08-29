@@ -65,6 +65,7 @@ export const Z_INDEX = {
   sticky: 'var(--ds-z-sticky)',
   overlay: 'var(--ds-z-overlay)',
   modal: 'var(--ds-z-modal)',
+  popover: 'var(--ds-z-popover)',
   toast: 'var(--ds-z-toast)',
 } as const;
 

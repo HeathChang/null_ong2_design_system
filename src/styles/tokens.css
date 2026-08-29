@@ -11,6 +11,7 @@
   --ds-color-primary-500: #3b82f6;
   --ds-color-primary-600: #2563eb;
   --ds-color-primary-700: #1d4ed8;
+  --ds-color-primary-800: #1e40af;
 
   /* ───── Colors: Neutral ───── */
   --ds-color-neutral-0: #ffffff;
@@ -24,6 +25,24 @@
   --ds-color-neutral-700: #374151;
   --ds-color-neutral-800: #1f2937;
   --ds-color-neutral-900: #111827;
+
+  /*
+   * ───── Colors: 역할 ─────
+   * 값이 아니라 "쓰임"으로 이름 붙인 토큰. 다크 모드에서 명도가 뒤집혀도
+   * 컴포넌트 CSS를 고치지 않아도 되도록 여기서 흡수한다.
+   */
+  /** primary 표면 위의 전경색 (버튼 텍스트 등) */
+  --ds-color-on-primary: #ffffff;
+  /** danger 표면 위의 전경색 */
+  --ds-color-on-danger: #ffffff;
+  /** 체크 표시·스위치 손잡이처럼 채워진 컨트롤 위에 얹히는 색 */
+  --ds-color-control-knob: #ffffff;
+  /** 모달 뒤 딤 처리 */
+  --ds-color-overlay-backdrop: rgb(0 0 0 / 0.5);
+  /** 스켈레톤 shimmer 하이라이트 */
+  --ds-color-shimmer: rgb(255 255 255 / 0.6);
+  /** 콘텐츠 위에 반투명하게 얹히는 표면 (캐루셀 화살표 등) */
+  --ds-color-surface-translucent: rgb(255 255 255 / 0.85);
 
   /* ───── Colors: Semantic ───── */
   --ds-color-success: #22c55e;
@@ -39,6 +58,7 @@
   --ds-color-danger: #ef4444;
   --ds-color-danger-50: #fef2f2;
   --ds-color-danger-600: #dc2626;
+  --ds-color-danger-700: #b91c1c;
   --ds-color-danger-bg: #fef2f2;
   --ds-color-danger-border: #fca5a5;
   --ds-color-danger-text: #991b1b;
@@ -114,6 +134,8 @@
   --ds-z-sticky: 20;
   --ds-z-overlay: 50;
   --ds-z-modal: 100;
+  /* 툴팁·드롭다운은 body 포탈로 렌더되므로 모달보다 위에 있어야 잘리지 않는다. */
+  --ds-z-popover: 200;
   --ds-z-toast: 1000;
 
   /* ───── Transitions ───── */
@@ -129,4 +151,156 @@
   --ds-focus-ring-color: rgb(59 130 246 / 0.5);
   --ds-focus-ring-danger-color: rgb(239 68 68 / 0.5);
   --ds-focus-ring: 0 0 0 3px var(--ds-focus-ring-color);
+
+  /*
+   * 스타일시트가 실제로 로드됐는지 런타임에서 확인하기 위한 표식.
+   * 개발 모드에서 `styles.css` import 누락을 콘솔로 알려주는 데 쓴다.
+   */
+  --ds-loaded: 1;
+}
+
+/*
+ * ───── 다크 모드 ─────
+ *
+ * 세 가지 방식을 모두 지원한다.
+ *   1. 아무것도 안 하면 OS 설정을 따른다 (prefers-color-scheme)
+ *   2. <html class="dark"> 또는 [data-theme="dark"]로 강제
+ *   3. <html class="light"> 또는 [data-theme="light"]로 라이트 고정 (1번을 무력화)
+ *
+ * 토큰의 "역할"은 라이트와 동일하다 — neutral-0은 항상 표면, neutral-900은 항상 텍스트다.
+ * 그래서 컴포넌트 CSS는 한 줄도 바뀌지 않는다.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme='light']) {
+  /* ───── Colors: Brand ───── */
+  --ds-color-primary-50: #172554;
+  --ds-color-primary-100: #1e3a8a;
+  --ds-color-primary-200: #1d4ed8;
+  --ds-color-primary-500: #3b82f6;
+  --ds-color-primary-600: #60a5fa;
+  --ds-color-primary-700: #93c5fd;
+  --ds-color-primary-800: #bfdbfe;
+
+  /* ───── Colors: Neutral (표면이 0, 텍스트가 900 — 라이트와 역할이 같다) ───── */
+  --ds-color-neutral-0: #111827;
+  --ds-color-neutral-50: #1f2937;
+  --ds-color-neutral-100: #273449;
+  --ds-color-neutral-200: #374151;
+  --ds-color-neutral-300: #4b5563;
+  --ds-color-neutral-400: #6b7280;
+  --ds-color-neutral-500: #9ca3af;
+  --ds-color-neutral-600: #cbd5e1;
+  --ds-color-neutral-700: #e2e8f0;
+  --ds-color-neutral-800: #f1f5f9;
+  --ds-color-neutral-900: #f8fafc;
+
+  /* ───── Colors: 역할 ───── */
+  --ds-color-on-primary: #0b1220;
+  --ds-color-on-danger: #2a0d0d;
+  --ds-color-control-knob: #ffffff;
+  --ds-color-overlay-backdrop: rgb(0 0 0 / 0.7);
+  --ds-color-shimmer: rgb(255 255 255 / 0.08);
+  --ds-color-surface-translucent: rgb(17 24 39 / 0.85);
+
+  /* ───── Colors: Semantic ───── */
+  --ds-color-success: #22c55e;
+  --ds-color-success-bg: #052e16;
+  --ds-color-success-border: #166534;
+  --ds-color-success-text: #86efac;
+
+  --ds-color-warning: #f59e0b;
+  --ds-color-warning-bg: #2e1a02;
+  --ds-color-warning-border: #92400e;
+  --ds-color-warning-text: #fcd34d;
+
+  --ds-color-danger: #ef4444;
+  --ds-color-danger-50: #2a0d0d;
+  --ds-color-danger-600: #f87171;
+  --ds-color-danger-700: #fca5a5;
+  --ds-color-danger-bg: #2a0d0d;
+  --ds-color-danger-border: #991b1b;
+  --ds-color-danger-text: #fca5a5;
+
+  --ds-color-info: #3b82f6;
+  --ds-color-info-bg: #0c1e3e;
+  --ds-color-info-border: #1e40af;
+  --ds-color-info-text: #93c5fd;
+
+  /* ───── Shadows (어두운 배경에서는 더 진하게) ───── */
+  --ds-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --ds-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --ds-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6);
+
+  /* ───── Focus Ring ───── */
+  --ds-focus-ring-color: rgb(147 197 253 / 0.6);
+  --ds-focus-ring-danger-color: rgb(252 165 165 / 0.6);
+  }
+}
+
+:root.dark,
+:root[data-theme='dark'],
+.dark,
+[data-theme='dark'] {
+  /* ───── Colors: Brand ───── */
+  --ds-color-primary-50: #172554;
+  --ds-color-primary-100: #1e3a8a;
+  --ds-color-primary-200: #1d4ed8;
+  --ds-color-primary-500: #3b82f6;
+  --ds-color-primary-600: #60a5fa;
+  --ds-color-primary-700: #93c5fd;
+  --ds-color-primary-800: #bfdbfe;
+
+  /* ───── Colors: Neutral (표면이 0, 텍스트가 900 — 라이트와 역할이 같다) ───── */
+  --ds-color-neutral-0: #111827;
+  --ds-color-neutral-50: #1f2937;
+  --ds-color-neutral-100: #273449;
+  --ds-color-neutral-200: #374151;
+  --ds-color-neutral-300: #4b5563;
+  --ds-color-neutral-400: #6b7280;
+  --ds-color-neutral-500: #9ca3af;
+  --ds-color-neutral-600: #cbd5e1;
+  --ds-color-neutral-700: #e2e8f0;
+  --ds-color-neutral-800: #f1f5f9;
+  --ds-color-neutral-900: #f8fafc;
+
+  /* ───── Colors: 역할 ───── */
+  --ds-color-on-primary: #0b1220;
+  --ds-color-on-danger: #2a0d0d;
+  --ds-color-control-knob: #ffffff;
+  --ds-color-overlay-backdrop: rgb(0 0 0 / 0.7);
+  --ds-color-shimmer: rgb(255 255 255 / 0.08);
+  --ds-color-surface-translucent: rgb(17 24 39 / 0.85);
+
+  /* ───── Colors: Semantic ───── */
+  --ds-color-success: #22c55e;
+  --ds-color-success-bg: #052e16;
+  --ds-color-success-border: #166534;
+  --ds-color-success-text: #86efac;
+
+  --ds-color-warning: #f59e0b;
+  --ds-color-warning-bg: #2e1a02;
+  --ds-color-warning-border: #92400e;
+  --ds-color-warning-text: #fcd34d;
+
+  --ds-color-danger: #ef4444;
+  --ds-color-danger-50: #2a0d0d;
+  --ds-color-danger-600: #f87171;
+  --ds-color-danger-700: #fca5a5;
+  --ds-color-danger-bg: #2a0d0d;
+  --ds-color-danger-border: #991b1b;
+  --ds-color-danger-text: #fca5a5;
+
+  --ds-color-info: #3b82f6;
+  --ds-color-info-bg: #0c1e3e;
+  --ds-color-info-border: #1e40af;
+  --ds-color-info-text: #93c5fd;
+
+  /* ───── Shadows (어두운 배경에서는 더 진하게) ───── */
+  --ds-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --ds-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --ds-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6);
+
+  /* ───── Focus Ring ───── */
+  --ds-focus-ring-color: rgb(147 197 253 / 0.6);
+  --ds-focus-ring-danger-color: rgb(252 165 165 / 0.6);
 }

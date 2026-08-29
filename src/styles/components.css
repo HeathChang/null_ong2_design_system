@@ -65,20 +65,24 @@
 }
 
 /* Button Variants */
+/*
+ * primary-500(#3b82f6) 위의 흰 글씨는 3.68:1로 WCAG AA(4.5:1) 미달이었다.
+ * 한 단계 진한 600을 기본으로 쓰고 hover/active를 700/800으로 밀었다.
+ */
 .ds-btn--primary {
-  background-color: var(--ds-color-primary-500);
-  border-color: var(--ds-color-primary-500);
-  color: var(--ds-color-neutral-0);
+  background-color: var(--ds-color-primary-600);
+  border-color: var(--ds-color-primary-600);
+  color: var(--ds-color-on-primary);
 }
 
 .ds-btn--primary:hover:not(:disabled) {
-  background-color: var(--ds-color-primary-600);
-  border-color: var(--ds-color-primary-600);
+  background-color: var(--ds-color-primary-700);
+  border-color: var(--ds-color-primary-700);
 }
 
 .ds-btn--primary:active:not(:disabled) {
-  background-color: var(--ds-color-primary-700);
-  border-color: var(--ds-color-primary-700);
+  background-color: var(--ds-color-primary-800);
+  border-color: var(--ds-color-primary-800);
 }
 
 .ds-btn--secondary {
@@ -102,15 +106,16 @@
   background-color: var(--ds-color-neutral-100);
 }
 
+/* danger(#ef4444) 위의 흰 글씨도 3.76:1로 미달이라 600/700으로 한 단계씩 진하게. */
 .ds-btn--danger {
-  background-color: var(--ds-color-danger);
-  border-color: var(--ds-color-danger);
-  color: var(--ds-color-neutral-0);
+  background-color: var(--ds-color-danger-600);
+  border-color: var(--ds-color-danger-600);
+  color: var(--ds-color-on-danger);
 }
 
 .ds-btn--danger:hover:not(:disabled) {
-  background-color: var(--ds-color-danger-600);
-  border-color: var(--ds-color-danger-600);
+  background-color: var(--ds-color-danger-700);
+  border-color: var(--ds-color-danger-700);
 }
 
 .ds-btn--danger:focus-visible {
@@ -181,7 +186,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgb(255 255 255 / 0.6),
+    var(--ds-color-shimmer),
     transparent
   );
   animation: ds-shimmer 1.5s infinite;
@@ -277,9 +282,8 @@
 }
 
 .ds-label__required {
-  color: var(--ds-color-danger);
+  color: var(--ds-color-danger-600);
   margin-left: var(--ds-spacing-0-5);
-  aria-hidden: true;
 }
 
 .ds-input,
@@ -300,9 +304,10 @@
   appearance: none;
 }
 
+/* neutral-400은 흰 배경에서 2.54:1이라 본문 대비 기준에 못 미친다. */
 .ds-input::placeholder,
 .ds-textarea::placeholder {
-  color: var(--ds-color-neutral-400);
+  color: var(--ds-color-neutral-500);
 }
 
 .ds-input:hover:not(:disabled),
@@ -376,7 +381,7 @@
 
 .ds-field-error {
   font-size: var(--ds-font-size-xs);
-  color: var(--ds-color-danger);
+  color: var(--ds-color-danger-600);
   margin: 0;
 }
 
@@ -435,7 +440,7 @@
   top: 1px;
   width: 4px;
   height: 8px;
-  border: 2px solid white;
+  border: 2px solid var(--ds-color-control-knob);
   border-top: none;
   border-left: none;
   transform: rotate(45deg);
@@ -449,7 +454,7 @@
   transform: translate(-50%, -50%);
   width: 6px;
   height: 6px;
-  background-color: white;
+  background-color: var(--ds-color-control-knob);
   border-radius: var(--ds-radius-full);
 }
 
@@ -574,6 +579,17 @@
 .ds-switch-wrapper--lg .ds-switch__thumb { width: 20px; height: 20px; }
 .ds-switch-wrapper--lg .ds-switch__input:checked ~ .ds-switch__track .ds-switch__thumb { transform: translateX(20px); }
 
+.ds-switch__label {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-neutral-700);
+  line-height: var(--ds-line-height-normal);
+}
+
+.ds-switch-wrapper--disabled .ds-switch__label {
+  color: var(--ds-color-neutral-400);
+}
+
 .ds-switch__input:checked ~ .ds-switch__track {
   background-color: var(--ds-color-primary-500);
 }
@@ -685,7 +701,7 @@
 .ds-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgb(0 0 0 / 0.5);
+  background-color: var(--ds-color-overlay-backdrop);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -963,8 +979,15 @@
   flex: 1;
 }
 
+/*
+ * 패널은 tabIndex=0이라 키보드로 실제 포커스를 받는다.
+ * outline만 지우고 대체를 두지 않으면 사용자가 현재 위치를 완전히 잃는다.
+ */
 .ds-tabs__panel:focus-visible {
-  outline: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--ds-focus-ring);
+  border-radius: var(--ds-radius-md);
 }
 
 /* ───── Tooltip ───── */
@@ -977,7 +1000,7 @@
   font-size: var(--ds-font-size-xs);
   line-height: var(--ds-line-height-normal);
   max-width: 280px;
-  z-index: var(--ds-z-overlay);
+  z-index: var(--ds-z-popover);
   pointer-events: none;
   box-shadow: var(--ds-shadow-md);
 }
@@ -990,7 +1013,7 @@
   box-shadow: var(--ds-shadow-md);
   padding: var(--ds-spacing-1);
   min-width: 160px;
-  z-index: var(--ds-z-dropdown);
+  z-index: var(--ds-z-popover);
   font-family: var(--ds-font-sans);
   display: flex;
   flex-direction: column;
@@ -1021,13 +1044,14 @@
   box-shadow: var(--ds-focus-ring);
 }
 
-.ds-dropdown-menu__item:disabled {
+.ds-dropdown-menu__item:disabled,
+.ds-dropdown-menu__item--disabled {
   color: var(--ds-color-neutral-400);
   cursor: not-allowed;
 }
 
 .ds-dropdown-menu__item--destructive {
-  color: var(--ds-color-danger);
+  color: var(--ds-color-danger-600);
 }
 
 .ds-dropdown-menu__item--destructive:hover:not(:disabled) {
@@ -1068,7 +1092,7 @@
   align-items: center;
   justify-content: center;
   border: none;
-  background-color: rgb(255 255 255 / 0.85);
+  background-color: var(--ds-color-surface-translucent);
   color: var(--ds-color-neutral-800);
   border-radius: var(--ds-radius-full);
   cursor: pointer;
@@ -1094,34 +1118,159 @@
 .ds-carousel__arrow--prev { left: var(--ds-spacing-3); }
 .ds-carousel__arrow--next { right: var(--ds-spacing-3); }
 
+.ds-carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) 0;
+}
+
+.ds-carousel__playback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ds-color-neutral-500);
+  border-radius: var(--ds-radius-full);
+  cursor: pointer;
+  transition: color var(--ds-transition-base), background-color var(--ds-transition-base);
+}
+
+.ds-carousel__playback:hover {
+  color: var(--ds-color-neutral-800);
+  background-color: var(--ds-color-neutral-100);
+}
+
+.ds-carousel__playback:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--ds-focus-ring);
+}
+
 .ds-carousel__indicators {
   display: flex;
   justify-content: center;
-  gap: var(--ds-spacing-2);
-  padding: var(--ds-spacing-3) 0;
+  gap: var(--ds-spacing-1);
 }
 
+/*
+ * 버튼 자체는 WCAG 2.5.8(최소 24x24) 충족을 위한 투명 히트 영역이고,
+ * 눈에 보이는 점은 내부 span이다.
+ */
 .ds-carousel__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--ds-radius-full);
+}
+
+.ds-carousel__indicator-dot {
+  display: block;
   width: 8px;
   height: 8px;
-  border: none;
   background-color: var(--ds-color-neutral-300);
   border-radius: var(--ds-radius-full);
-  cursor: pointer;
-  padding: 0;
   transition: background-color var(--ds-transition-base), width var(--ds-transition-base);
 }
 
-.ds-carousel__indicator:hover {
+.ds-carousel__indicator:hover .ds-carousel__indicator-dot {
   background-color: var(--ds-color-neutral-400);
 }
 
 .ds-carousel__indicator:focus-visible {
-  outline: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
   box-shadow: var(--ds-focus-ring);
 }
 
-.ds-carousel__indicator--active {
+.ds-carousel__indicator--active .ds-carousel__indicator-dot {
   background-color: var(--ds-color-primary-500);
-  width: 24px;
+  width: 20px;
+}
+
+/* ───── 유틸리티 ───── */
+
+/**
+ * 시각적으로는 감추되 스크린리더에는 남기는 텍스트.
+ * (display:none / visibility:hidden은 접근성 트리에서도 사라진다)
+ */
+.ds-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ───── 고대비 모드 (Windows forced-colors) ───── */
+
+/**
+ * 포커스 링을 box-shadow로만 그리면 forced-colors 모드에서 그림자가 제거되어
+ * 키보드 사용자가 현재 위치를 완전히 잃는다. 시스템 색 outline으로 보강한다.
+ */
+@media (forced-colors: active) {
+  [class^="ds-"]:focus-visible,
+  [class*=" ds-"]:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .ds-btn,
+  .ds-input,
+  .ds-textarea,
+  .ds-select,
+  .ds-modal,
+  .ds-dropdown-menu,
+  .ds-toast,
+  .ds-alert {
+    border: 1px solid ButtonBorder;
+  }
+}
+
+/* ───── 동작 줄이기 (prefers-reduced-motion) ───── */
+
+/**
+ * OS에서 "동작 줄이기"를 켠 사용자에게는 등장 애니메이션과 전환을 제거한다 (WCAG 2.3.3).
+ * `!important`는 컴포넌트가 각자 선언한 animation/transition을 한 곳에서 무력화하기 위한
+ * 접근성 오버라이드다 — 이 블록에 한해 허용한다.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [class^="ds-"],
+  [class*=" ds-"],
+  [class^="ds-"]::before,
+  [class*=" ds-"]::before,
+  [class^="ds-"]::after,
+  [class*=" ds-"]::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /*
+   * 스피너와 스켈레톤은 "진행 중"을 알리는 신호라 완전히 멈추면 의미가 사라진다.
+   * 없애는 대신 충분히 느리게 돌린다.
+   */
+  .ds-spinner {
+    animation: ds-spin 3s linear infinite !important;
+  }
+
+  .ds-skeleton::after {
+    animation: ds-shimmer 4s infinite !important;
+  }
 }
