@@ -1,19 +1,18 @@
 import type { CSSProperties, HTMLAttributes } from 'react';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../tokens';
 
-const HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const;
-type HeadingLevel = (typeof HEADING_LEVELS)[number];
-
+export const HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const;
 type HeadingTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-const LEVEL_TO_SIZE: Record<HeadingLevel, keyof typeof FONT_SIZE> = {
-  1: '4xl',
-  2: '3xl',
-  3: '2xl',
-  4: 'xl',
-  5: 'lg',
-  6: 'base',
-} as const;
+/** 태그별 기본 시각 크기. `size`를 주면 이 값은 무시된다. */
+const TAG_TO_SIZE: Record<HeadingTag, keyof typeof FONT_SIZE> = {
+  h1: '4xl',
+  h2: '3xl',
+  h3: '2xl',
+  h4: 'xl',
+  h5: 'lg',
+  h6: 'base',
+};
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   /** 헤딩 레벨 (h1 ~ h6). 시각적 크기와 독립적으로 설정 가능 */
@@ -42,9 +41,7 @@ export function Heading({
   style,
   ...props
 }: HeadingProps) {
-  // as에서 숫자만 추출하여 레벨 파악
-  const level = Number(Component[1]) as HeadingLevel;
-  const resolvedSize = size ?? LEVEL_TO_SIZE[level];
+  const resolvedSize = size ?? TAG_TO_SIZE[Component];
 
   const inlineStyle: CSSProperties = {
     fontSize: FONT_SIZE[resolvedSize],

@@ -1,7 +1,7 @@
 import type { ElementType } from 'react';
 import type { PolymorphicProps } from '../../../types';
 
-const CONTAINER_MAX_WIDTHS = ['sm', 'md', 'lg', 'xl', '2xl', 'full'] as const;
+export const CONTAINER_MAX_WIDTHS = ['sm', 'md', 'lg', 'xl', '2xl', 'full'] as const;
 type ContainerMaxWidth = (typeof CONTAINER_MAX_WIDTHS)[number];
 
 interface ContainerOwnProps {
@@ -28,7 +28,7 @@ export function Container<TElement extends ElementType = 'div'>({
   className,
   ...props
 }: ContainerProps<TElement>) {
-  const Component = (as ?? 'div') as ElementType;
+  const Component = (as ?? 'div');
 
   const classNames = [
     'ds-container',

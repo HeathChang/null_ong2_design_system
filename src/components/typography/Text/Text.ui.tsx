@@ -3,7 +3,7 @@ import type { FontSizeKey, FontWeightKey } from '../../../tokens';
 import type { PolymorphicProps } from '../../../types';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../tokens';
 
-const TEXT_COLORS = [
+export const TEXT_COLORS = [
   'default',
   'muted',
   'primary',
@@ -58,7 +58,7 @@ export function Text<TElement extends ElementType = 'p'>({
   style,
   ...props
 }: TextProps<TElement>) {
-  const Component = (as ?? 'p') as ElementType;
+  const Component = (as ?? 'p');
 
   const inlineStyle: CSSProperties = {
     fontSize: FONT_SIZE[size],

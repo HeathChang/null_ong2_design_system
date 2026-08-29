@@ -1,6 +1,6 @@
 import type { CSSProperties, HTMLAttributes } from 'react';
 
-const SKELETON_VARIANTS = ['rectangular', 'text', 'circle'] as const;
+export const SKELETON_VARIANTS = ['rectangular', 'text', 'circle'] as const;
 type SkeletonVariant = (typeof SKELETON_VARIANTS)[number];
 
 export interface SkeletonProps extends HTMLAttributes<HTMLSpanElement> {

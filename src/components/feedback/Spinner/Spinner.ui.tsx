@@ -1,11 +1,12 @@
 import type { HTMLAttributes } from 'react';
+import { useDsStrings } from '../../../i18n';
 
-const SPINNER_SIZES = ['xs', 'sm', 'md', 'lg'] as const;
+export const SPINNER_SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 type SpinnerSize = (typeof SPINNER_SIZES)[number];
 
 export interface SpinnerProps extends HTMLAttributes<HTMLSpanElement> {
   size?: SpinnerSize;
-  /** 스크린 리더를 위한 레이블 */
+  /** 스크린 리더를 위한 레이블 (기본: 로케일의 "로딩 중") */
   label?: string;
 }
 
@@ -14,10 +15,11 @@ export interface SpinnerProps extends HTMLAttributes<HTMLSpanElement> {
  */
 export function Spinner({
   size = 'md',
-  label = '로딩 중',
+  label,
   className,
   ...props
 }: SpinnerProps) {
+  const strings = useDsStrings();
   const classNames = ['ds-spinner', `ds-spinner--${size}`, className]
     .filter(Boolean)
     .join(' ');
@@ -25,7 +27,7 @@ export function Spinner({
   return (
     <span
       role="status"
-      aria-label={label}
+      aria-label={label ?? strings.loading}
       className={classNames}
       {...props}
     />

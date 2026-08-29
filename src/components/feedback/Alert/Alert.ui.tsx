@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 
-const ALERT_VARIANTS = ['info', 'success', 'warning', 'danger'] as const;
+export const ALERT_VARIANTS = ['info', 'success', 'warning', 'danger'] as const;
 type AlertVariant = (typeof ALERT_VARIANTS)[number];
 
 export interface AlertProps extends HTMLAttributes<HTMLDivElement> {

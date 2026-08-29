@@ -1,18 +1,21 @@
 /**
  * null_ong2-design-system — 메인 엔트리포인트
  *
- * zero-config 사용:
+ * 사용:
+ *   import 'null_ong2-design-system/styles.css';  // 앱 진입점에서 1회
  *   import { Button } from 'null_ong2-design-system';
  *
- * 스타일은 이 import 시 자동으로 주입된다.
+ * 스타일은 JS 번들에 주입되지 않는다(tsup `injectStyle: false`).
+ * SSR에서 FOUC가 생겨 v0.2.2부터 `dist/index.css`를 별도 export한다.
+ * 아래 import는 tsup이 그 CSS 파일을 만들어내기 위한 것이며, 런타임 부수효과는 없다.
  */
-
-// 글로벌 스타일 자동 주입 (tsup injectStyle 처리)
-// @import 구문을 거치지 않고 각 파일을 직접 import해야 tsup이 실제 CSS 내용을 번들에 인라인한다.
-// (이전 구조: index.css가 @import로 두 파일을 합쳤으나, tsup은 @import를 인라인하지 않아
-//  런타임에 브라우저가 미존재 파일을 fetch 시도하던 버그가 있었다 — v0.2.1 수정)
 import './styles/tokens.css';
 import './styles/components.css';
+
+import { warnIfStylesMissing } from './internal/warnMissingStyles';
+
+// 개발 모드에서 styles.css import 누락을 1회 안내한다 (프로덕션에서는 no-op).
+warnIfStylesMissing();
 
 // 컴포넌트 exports
 export {
@@ -81,6 +84,39 @@ export type {
   TooltipProps,
 } from './components';
 
+// 값 목록 상수 exports (variant 선택 UI, 런타임 검증용)
+export {
+  ALERT_VARIANTS,
+  AVATAR_SHAPES,
+  AVATAR_SIZES,
+  BADGE_SIZES,
+  BADGE_VARIANTS,
+  BUTTON_SIZES,
+  BUTTON_VARIANTS,
+  CONTAINER_MAX_WIDTHS,
+  HEADING_LEVELS,
+  MODAL_SIZES,
+  SKELETON_VARIANTS,
+  SPINNER_SIZES,
+  SWITCH_SIZES,
+  TEXT_COLORS,
+  TOAST_POSITIONS,
+  TOAST_VARIANTS,
+} from './constants';
+
+// i18n exports
+export { DesignSystemProvider, useDsFormat, useDsStrings } from './i18n';
+export {
+  DEFAULT_LOCALE,
+  DS_LOCALES,
+  EN_STRINGS,
+  JA_STRINGS,
+  KO_STRINGS,
+  ZH_STRINGS,
+  formatString,
+} from './i18n';
+export type { DesignSystemProviderProps, DsLocale, DsStrings } from './i18n';
+
 // 토큰 exports
 export { SPACING, RADIUS, FONT_SIZE, FONT_WEIGHT, Z_INDEX } from './tokens';
 export type {
@@ -92,7 +128,14 @@ export type {
 } from './tokens';
 
 // 훅 exports
-export { useControllable, useEscapeKey, useFocusTrap } from './hooks';
+export {
+  useBodyScrollLock,
+  useControllable,
+  useEscapeKey,
+  useFocusTrap,
+  useInertBackground,
+  usePrefersReducedMotion,
+} from './hooks';
 
 // 공통 타입 exports
 export type {
