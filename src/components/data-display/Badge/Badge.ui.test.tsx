@@ -17,9 +17,15 @@ describe('Badge', () => {
     expect(screen.getByText('소형')).toHaveClass('ds-badge--sm');
   });
 
-  it('should not render children when dot is true', () => {
+  it('should not render children visually when dot is true', () => {
     const { container } = render(<Badge dot variant="danger">알림</Badge>);
-    expect(screen.queryByText('알림')).not.toBeInTheDocument();
     expect(container.firstChild).toHaveClass('ds-badge--dot');
+    // 점만 그리지만 children을 버리지는 않는다 — 스크린리더에는 남긴다.
+    expect(screen.getByText('알림')).toHaveClass('ds-visually-hidden');
+  });
+
+  it('should not render an empty label node when dot has no children', () => {
+    const { container } = render(<Badge dot variant="danger" />);
+    expect(container.querySelector('.ds-visually-hidden')).toBeNull();
   });
 });

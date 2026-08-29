@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from './Button.ui';
 
@@ -109,6 +109,96 @@ describe('Button', () => {
     it('should pass through custom aria attributes', () => {
       render(<Button aria-label="커스텀 레이블">버튼</Button>);
       expect(screen.getByRole('button', { name: '커스텀 레이블' })).toBeInTheDocument();
+    });
+  });
+
+
+  describe('로딩 후 포커스 복원', () => {
+    /**
+     * 브라우저는 버튼이 disabled가 되는 순간 포커스를 해제해 body로 보낸다.
+     * jsdom은 그 동작을 흉내내지 않으므로(disabled 요소의 blur()가 no-op) 직접 재현한다.
+     */
+    function simulateBrowserBlurOnDisable(button: HTMLElement) {
+      act(() => {
+        fireEvent.focusOut(button);
+        const scratch = document.createElement('button');
+        document.body.appendChild(scratch);
+        scratch.focus();
+        scratch.remove();
+      });
+    }
+
+    it('should return focus to the button when loading ends', () => {
+      const { rerender } = render(<Button isLoading={false}>저장</Button>);
+      const button = screen.getByRole('button');
+      act(() => button.focus());
+
+      rerender(<Button isLoading>저장</Button>);
+      simulateBrowserBlurOnDisable(button);
+      expect(button).not.toHaveFocus();
+
+      rerender(<Button isLoading={false}>저장</Button>);
+      expect(button).toHaveFocus();
+    });
+
+    it('should not grab focus if the button never had it', () => {
+      const { rerender } = render(
+        <>
+          <button type="button">다른 버튼</button>
+          <Button isLoading>저장</Button>
+        </>
+      );
+      const other = screen.getByRole('button', { name: '다른 버튼' });
+      act(() => other.focus());
+
+      rerender(
+        <>
+          <button type="button">다른 버튼</button>
+          <Button isLoading={false}>저장</Button>
+        </>
+      );
+      expect(other).toHaveFocus();
+    });
+
+    it('should not steal focus that moved elsewhere during loading', () => {
+      const { rerender } = render(
+        <>
+          <Button isLoading={false}>저장</Button>
+          <button type="button">다음 단계</button>
+        </>
+      );
+      const save = screen.getByRole('button', { name: '저장' });
+      act(() => save.focus());
+
+      rerender(
+        <>
+          <Button isLoading>저장</Button>
+          <button type="button">다음 단계</button>
+        </>
+      );
+      simulateBrowserBlurOnDisable(save);
+
+      // 로딩 중 앱이 다음 단계로 포커스를 옮겼다.
+      const next = screen.getByRole('button', { name: '다음 단계' });
+      act(() => next.focus());
+
+      rerender(
+        <>
+          <Button isLoading={false}>저장</Button>
+          <button type="button">다음 단계</button>
+        </>
+      );
+      expect(next).toHaveFocus();
+    });
+
+    it('should still forward a user-supplied onBlur', () => {
+      const handleBlur = jest.fn();
+      render(<Button onBlur={handleBlur}>저장</Button>);
+      const button = screen.getByRole('button');
+
+      act(() => button.focus());
+      act(() => button.blur());
+      expect(handleBlur).toHaveBeenCalled();
     });
   });
 });

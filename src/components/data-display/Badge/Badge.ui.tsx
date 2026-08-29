@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 
-const BADGE_VARIANTS = [
+export const BADGE_VARIANTS = [
   'neutral',
   'primary',
   'success',
@@ -10,7 +10,7 @@ const BADGE_VARIANTS = [
 ] as const;
 type BadgeVariant = (typeof BADGE_VARIANTS)[number];
 
-const BADGE_SIZES = ['sm', 'md'] as const;
+export const BADGE_SIZES = ['sm', 'md'] as const;
 type BadgeSize = (typeof BADGE_SIZES)[number];
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -50,7 +50,17 @@ export function Badge({
 
   return (
     <span className={classNames} {...props}>
-      {!dot && children}
+      {/*
+        dot은 시각적으로 점만 그리지만, children을 그냥 버리면
+        <Badge dot>3</Badge>의 "3"이 조용히 사라진다. 스크린리더에는 남긴다.
+      */}
+      {dot ? (
+        children !== undefined && children !== null && children !== false ? (
+          <span className="ds-visually-hidden">{children}</span>
+        ) : null
+      ) : (
+        children
+      )}
     </span>
   );
 }

@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ToastProvider, useToast } from './Toast.ui';
 
@@ -86,5 +86,71 @@ describe('Toast', () => {
     );
     await user.click(screen.getByRole('button', { name: '알림' }));
     expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+
+
+  it('should pause the auto-dismiss timer while hovered', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    render(
+      <ToastProvider>
+        <TestTrigger message="읽는 중" />
+      </ToastProvider>
+    );
+    await user.click(screen.getByRole('button', { name: '알림' }));
+
+    const container = screen.getByRole('region', { name: '알림' });
+    fireEvent.mouseEnter(container);
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(screen.getByText('읽는 중')).toBeInTheDocument();
+
+    fireEvent.mouseLeave(container);
+    act(() => {
+      jest.advanceTimersByTime(3100);
+    });
+    expect(screen.queryByText('읽는 중')).not.toBeInTheDocument();
+  });
+
+  it('should keep the live region mounted before any toast appears', () => {
+    render(
+      <ToastProvider>
+        <TestTrigger message="X" />
+      </ToastProvider>
+    );
+    const container = screen.getByRole('region', { name: '알림' });
+    expect(container).toHaveAttribute('aria-live', 'polite');
+  });
+
+
+  it('should cap the number of visible toasts', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    render(
+      <ToastProvider maxToasts={2}>
+        <TestTrigger message="알림" />
+      </ToastProvider>
+    );
+    const trigger = screen.getByRole('button', { name: '알림' });
+    await user.click(trigger);
+    await user.click(trigger);
+    await user.click(trigger);
+
+    expect(document.querySelectorAll('.ds-toast')).toHaveLength(2);
+  });
+
+  it('should treat maxToasts=0 as one instead of unlimited', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    render(
+      <ToastProvider maxToasts={0}>
+        <TestTrigger message="알림" />
+      </ToastProvider>
+    );
+    const trigger = screen.getByRole('button', { name: '알림' });
+    await user.click(trigger);
+    await user.click(trigger);
+    await user.click(trigger);
+
+    // slice(-0)은 slice(0)과 같아서 아무것도 잘리지 않고 무한히 쌓였다.
+    expect(document.querySelectorAll('.ds-toast')).toHaveLength(1);
   });
 });
