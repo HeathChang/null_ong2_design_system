@@ -478,7 +478,7 @@ const buttonRef = useRef<HTMLButtonElement>(null);
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
-| `id` | `string` | — | input id (레이블 연결에 사용) |
+| `id` | `string` | 자동 생성 | input id. 생략하면 내부에서 고유 id를 만들어 레이블·힌트·에러를 연결한다 |
 | `label` | `string` | — | 레이블 텍스트 |
 | `hint` | `string` | — | 힌트 메시지 (에러 없을 때 표시) |
 | `error` | `string` | — | 에러 메시지 (있으면 에러 스타일 적용) |
@@ -534,7 +534,7 @@ const inputRef = useRef<HTMLInputElement>(null);
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
-| `id` | `string` | — | textarea id |
+| `id` | `string` | 자동 생성 | textarea id. 생략해도 레이블·힌트·에러가 연결된다 |
 | `label` | `string` | — | 레이블 텍스트 |
 | `hint` | `string` | — | 힌트 메시지 |
 | `error` | `string` | — | 에러 메시지 |
@@ -573,7 +573,7 @@ import { Textarea } from 'null_ong2-design-system';
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
-| `id` | `string` | — | checkbox id |
+| `id` | `string` | 자동 생성 | checkbox id. 생략해도 레이블이 연결된다 |
 | `label` | `string` | — | 체크박스 레이블 |
 | `checked` | `boolean` | — | 체크 상태 (controlled) |
 | `defaultChecked` | `boolean` | — | 초기 체크 상태 (uncontrolled) |
@@ -609,7 +609,7 @@ const [agreed, setAgreed] = useState(false);
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
-| `id` | `string` | — | radio id |
+| `id` | `string` | 자동 생성 | radio id. 생략해도 레이블이 연결된다 |
 | `name` | `string` | — | 라디오 그룹 이름 (동일 그룹은 같은 name) |
 | `value` | `string` | — | 선택 값 |
 | `label` | `string` | — | 라디오 레이블 |
@@ -659,7 +659,7 @@ const [method, setMethod] = useState('email');
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
-| `id` | `string` | — | select id |
+| `id` | `string` | 자동 생성 | select id. 생략해도 레이블·힌트·에러가 연결된다 |
 | `label` | `string` | — | 레이블 텍스트 |
 | `options` | `SelectOption[]` | **필수** | 선택 옵션 목록 |
 | `placeholder` | `string` | — | 플레이스홀더 옵션 텍스트 |
@@ -847,7 +847,7 @@ ON/OFF 즉시 반영 토글. Checkbox와 달리 설정 화면에 적합.
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
-| `id` | `string` | — | switch id |
+| `id` | `string` | 자동 생성 | switch id. 생략해도 레이블이 연결된다 |
 | `label` | `string` | — | 레이블 텍스트 |
 | `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | 크기 |
 | `checked` | `boolean` | — | 상태 (controlled) |
@@ -894,7 +894,7 @@ import { Avatar } from 'null_ong2-design-system';
 |------|-----|--------|------|
 | `variant` | `'neutral'` \| `'primary'` \| `'success'` \| `'warning'` \| `'danger'` \| `'info'` | `'neutral'` | 시각 스타일 |
 | `size` | `'sm'` \| `'md'` | `'md'` | 크기 |
-| `dot` | `boolean` | `false` | 점 형태 (텍스트 없이 알림 표시) |
+| `dot` | `boolean` | `false` | 점 형태. children은 화면에서 숨기되 스크린리더에는 읽힌다 |
 
 ```tsx
 import { Badge } from 'null_ong2-design-system';
@@ -902,6 +902,7 @@ import { Badge } from 'null_ong2-design-system';
 <Badge variant="success">활성</Badge>
 <Badge variant="danger">99+</Badge>
 <Badge variant="danger" dot />              // 빨간 점만 표시
+<Badge variant="danger" dot>새 알림 3건</Badge>  // 점만 보이고, 스크린리더는 "새 알림 3건"을 읽음
 ```
 
 ---
@@ -920,6 +921,14 @@ import { Badge } from 'null_ong2-design-system';
 | `loop` | `boolean` | `true` | 무한 순환 |
 | `showArrows` | `boolean` | `true` | 좌우 화살표 표시 |
 | `showIndicators` | `boolean` | `true` | 점 인디케이터 표시 |
+| `ariaLabel` | `string` | `'캐루셀'` | 캐루셀 영역의 접근성 레이블 |
+
+**접근성**
+
+- 화면 밖 슬라이드는 `inert` 처리되어 탭 순서에서 빠진다. 슬라이드 안에 링크/버튼이 있어도 안전하다.
+- `autoPlayInterval`을 켜면 정지/재생 버튼이 함께 나타난다. 마우스를 올리거나 포커스가 들어오면 자동으로 멈춘다.
+- OS의 "동작 줄이기(prefers-reduced-motion)"가 켜져 있으면 자동 재생을 시작하지 않는다.
+- 인디케이터는 ←/→/Home/End로 이동할 수 있고 히트 영역이 24×24px이다.
 
 ```tsx
 import { Carousel } from 'null_ong2-design-system';
@@ -938,7 +947,10 @@ import { Carousel } from 'null_ong2-design-system';
 
 ## Tabs (Navigation)
 
-컴파운드 컴포넌트 패턴 기반 탭. 키보드 화살표 내비게이션 지원.
+컴파운드 컴포넌트 패턴 기반 탭.
+
+- `defaultValue`를 생략하면 **첫 번째 탭이 자동으로 선택**된다. (선택된 탭이 없으면 탭 바 전체가 키보드로 도달 불가능해지기 때문)
+- 키보드: ←/→ (`orientation="vertical"`이면 ↑/↓)로 순환 이동, `Home`/`End`로 처음/끝 이동, `Enter`/`Space`로 선택.
 
 | 컴포넌트 | 역할 |
 |----------|------|
@@ -969,7 +981,13 @@ import { Tabs } from 'null_ong2-design-system';
 
 ## Modal (Overlay)
 
-오버레이 다이얼로그. 포커스 트랩 + ESC 닫기 + 오버레이 클릭 닫기 자동 적용.
+오버레이 다이얼로그. 열면 다음이 자동으로 적용된다.
+
+- 포커스가 다이얼로그 안으로 이동하고 Tab이 안에서만 순환한다. 닫으면 원래 위치로 복원된다.
+- 배경 스크롤이 잠긴다 (모바일에서 배경이 같이 밀리지 않는다).
+- 배경 콘텐츠가 `aria-hidden` + `inert` 처리되어 스크린리더가 뚫고 들어가지 않는다.
+- 모달을 겹쳐 띄워도 `Esc` 한 번에는 **가장 위 모달만** 닫힌다.
+- 본문에서 텍스트를 드래그하다 오버레이에서 손을 떼도 닫히지 않는다 (누른 지점 기준 판정).
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
@@ -982,6 +1000,7 @@ import { Tabs } from 'null_ong2-design-system';
 | `closeOnOverlayClick` | `boolean` | `true` | 오버레이 클릭으로 닫기 |
 | `closeOnEscape` | `boolean` | `true` | ESC로 닫기 |
 | `showCloseButton` | `boolean` | `true` | 닫기 버튼 표시 |
+| `initialFocusRef` | `RefObject<HTMLElement>` | — | 열릴 때 포커스를 받을 요소 (기본: 첫 포커스 가능 요소) |
 
 ```tsx
 import { Modal, Button } from 'null_ong2-design-system';
@@ -1011,6 +1030,8 @@ const [open, setOpen] = useState(false);
 
 호버/포커스 시 부가 설명 표시. `@floating-ui/react` 기반 자동 위치 계산.
 
+`overflow: hidden|auto` 조상(모달 본문, 캐루셀 뷰포트 등) 안에서도 잘리지 않도록 `body` 포탈에 렌더된다.
+
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
 | `content` | `ReactNode` | **필수** | 툴팁 내용 |
@@ -1035,7 +1056,10 @@ import { Tooltip, Button } from 'null_ong2-design-system';
 
 ## DropdownMenu (Overlay)
 
-클릭 트리거 드롭다운 메뉴.
+클릭 트리거 드롭다운 메뉴. `body` 포탈에 렌더되어 `overflow` 조상 안에서도 잘리지 않는다.
+
+키보드 조작은 WAI-ARIA APG 메뉴 패턴을 따른다 — 트리거에서 ↑/↓ 또는 `Enter`/`Space`로 열면 첫 항목으로 포커스가 이동하고,
+↑/↓로 순환(비활성 항목은 건너뜀), `Esc`나 바깥 클릭으로 닫히며 포커스는 트리거로 복원된다.
 
 | Prop | 타입 | 기본값 | 설명 |
 |------|-----|--------|------|
@@ -1168,6 +1192,18 @@ function SaveButton() {
 --ds-spacing-2xl   /* 48px  */
 ```
 
+### z-index
+
+```css
+--ds-z-base       /* 0    */
+--ds-z-dropdown   /* 10   */
+--ds-z-sticky     /* 20   */
+--ds-z-overlay    /* 50   */
+--ds-z-modal      /* 100  */
+--ds-z-popover    /* 200  — Tooltip / DropdownMenu (모달 위에 떠야 함) */
+--ds-z-toast      /* 1000 */
+```
+
 ### 테두리 둥글기 (Radius)
 
 ```css
@@ -1197,9 +1233,10 @@ import { SPACING, RADIUS, FONT_SIZE, FONT_WEIGHT, Z_INDEX } from 'null_ong2-desi
 ```css
 :root {
   /* 브랜드 색상을 보라색으로 변경 */
-  --ds-color-primary-500: #8b5cf6;
-  --ds-color-primary-600: #7c3aed;
-  --ds-color-primary-700: #6d28d9;
+  --ds-color-primary-600: #7c3aed;  /* 버튼 기본 */
+  --ds-color-primary-700: #6d28d9;  /* 버튼 hover */
+  --ds-color-primary-800: #5b21b6;  /* 버튼 active */
+  --ds-color-primary-500: #8b5cf6;  /* 체크박스·스위치 채움 */
 
   /* 테두리를 더 둥글게 */
   --ds-radius-md: 8px;
@@ -1208,6 +1245,141 @@ import { SPACING, RADIUS, FONT_SIZE, FONT_WEIGHT, Z_INDEX } from 'null_ong2-desi
   --ds-font-sans: 'Pretendard', -apple-system, sans-serif;
 }
 ```
+
+> 색을 바꿀 때는 **대비**를 확인하세요. 본문 텍스트는 4.5:1, 아이콘·테두리 같은 UI 요소는 3:1 이상이어야 합니다.
+> 기본 팔레트는 `src/styles/tokens.test.ts`가 자동으로 검증합니다.
+
+---
+
+## 다크 모드
+
+별도 설정 없이 **OS 설정을 따라갑니다**. 직접 제어하고 싶으면 `<html>`에 클래스나 속성을 붙이세요.
+
+```html
+<!-- 1. 아무것도 안 함 → prefers-color-scheme을 따름 -->
+<html>
+
+<!-- 2. 다크 고정 (둘 중 아무거나) -->
+<html class="dark">
+<html data-theme="dark">
+
+<!-- 3. 라이트 고정 (OS가 다크여도 라이트 유지) -->
+<html class="light">
+<html data-theme="light">
+```
+
+```tsx
+// 토글 예시
+function ThemeToggle() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    document.documentElement.dataset['theme'] = theme;
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
+  return (
+    <Button onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}>
+      {theme === 'light' ? '다크 모드' : '라이트 모드'}
+    </Button>
+  );
+}
+```
+
+토큰의 **역할**은 두 테마에서 같습니다 — `--ds-color-neutral-0`은 언제나 표면색,
+`--ds-color-neutral-900`은 언제나 가장 진한 텍스트색입니다. 그래서 컴포넌트 CSS는 테마별 분기가 없고,
+직접 만든 컴포넌트도 같은 토큰만 쓰면 다크 모드를 자동으로 지원합니다.
+
+```css
+/* 소비자 컴포넌트도 토큰만 쓰면 자동으로 다크 대응된다 */
+.my-card {
+  background-color: var(--ds-color-neutral-0);
+  color: var(--ds-color-neutral-700);
+  border: 1px solid var(--ds-border-color);
+}
+```
+
+두 테마 모두 WCAG 2.1 AA 대비를 만족하며, 회귀는 테스트로 막습니다.
+
+---
+
+## 다국어 (i18n)
+
+컴포넌트가 내장한 문자열(모달 닫기 버튼, 캐루셀 화살표, 토스트 영역 레이블 등)은
+대부분 스크린리더에만 읽히지만 하드코딩되면 그대로 장벽이 됩니다.
+
+기본값은 **한국어**이고, `DesignSystemProvider`로 바꿀 수 있습니다. Provider가 없어도 동작합니다.
+
+```tsx
+import { DesignSystemProvider } from 'null_ong2-design-system';
+
+<DesignSystemProvider locale="en">
+  <App />
+</DesignSystemProvider>
+```
+
+내장 로케일: `ko`(기본) · `en` · `ja` · `zh`
+
+일부 문자열만 바꾸려면 `strings`를 함께 넘기세요. 지정한 키만 교체됩니다.
+
+```tsx
+<DesignSystemProvider locale="en" strings={{ close: 'Dismiss', toastRegion: 'Alerts' }}>
+  <App />
+</DesignSystemProvider>
+```
+
+지원하지 않는 언어는 전체 문자열을 직접 넘기면 됩니다.
+
+```tsx
+import { DesignSystemProvider, KO_STRINGS } from 'null_ong2-design-system';
+import type { DsStrings } from 'null_ong2-design-system';
+
+const FR: DsStrings = { ...KO_STRINGS, close: 'Fermer', loading: 'Chargement' /* ... */ };
+
+<DesignSystemProvider strings={FR}>
+  <App />
+</DesignSystemProvider>
+```
+
+> 브라우저 언어 **자동 감지는 하지 않습니다.** SSR에서 서버와 클라이언트가 다른 언어를 렌더해
+> 하이드레이션 불일치가 생기기 때문입니다. 감지가 필요하면 앱에서 판단해 `locale`로 넘겨주세요.
+
+---
+
+## 값 목록 상수
+
+각 컴포넌트가 받을 수 있는 값을 런타임 배열로도 제공합니다.
+variant 선택 UI를 만들거나, 서버에서 온 문자열을 검증할 때 씁니다.
+
+```tsx
+import { BUTTON_VARIANTS, BUTTON_SIZES } from 'null_ong2-design-system';
+
+{BUTTON_VARIANTS.map((variant) => (
+  <Button key={variant} variant={variant}>{variant}</Button>
+))}
+```
+
+제공 목록: `ALERT_VARIANTS` `AVATAR_SHAPES` `AVATAR_SIZES` `BADGE_SIZES` `BADGE_VARIANTS`
+`BUTTON_SIZES` `BUTTON_VARIANTS` `CONTAINER_MAX_WIDTHS` `HEADING_LEVELS` `MODAL_SIZES`
+`SKELETON_VARIANTS` `SPINNER_SIZES` `SWITCH_SIZES` `TEXT_COLORS` `TOAST_POSITIONS` `TOAST_VARIANTS`
+
+---
+
+## 번들 크기
+
+`dist`는 **압축하지 않은 채로** 배포됩니다. 소비자의 번들러가 압축하는 편이
+트리셰이킹에 유리하고 스택 트레이스도 읽을 수 있기 때문입니다.
+
+실제로 번들에 들어가는 크기 (brotli, 의존성 포함):
+
+| import | 크기 |
+|--------|------|
+| `{ Button }` | ~2.3 kB |
+| `{ Modal }` | ~3.5 kB |
+| 전체 import | ~29.5 kB |
+| `styles.css` | ~4.4 kB |
+
+`npm run size`로 직접 확인할 수 있고, CI가 상한을 강제합니다.
 
 ---
 
@@ -1237,11 +1409,89 @@ function Toggle({ value, defaultValue = false, onChange }) {
 <Toggle value={isEnabled} onChange={setIsEnabled} />
 ```
 
+### useEscapeKey
+
+`Esc`로 닫히는 레이어를 만든다. 여러 레이어가 동시에 활성이면 **가장 마지막에 열린 것 하나만** 반응한다.
+
+```tsx
+useEscapeKey(isOpen, close);
+```
+
+### useFocusTrap
+
+컨테이너 안으로 포커스를 가둔다. 활성화되면 첫 포커스 가능 요소로 이동하고, 해제되면 이전 위치로 복원한다.
+
+```tsx
+const ref = useRef<HTMLDivElement>(null);
+useFocusTrap(ref, isOpen);
+
+// 특정 요소에서 시작하고 싶으면
+useFocusTrap(ref, isOpen, { initialFocus: cancelButtonRef });
+```
+
+> 포탈처럼 DOM 노드가 나중에 붙는 경우에는 `useRef` 대신 노드를 state로 잡아 ref 객체 identity를 바꿔야
+> effect가 다시 돈다. `Modal`이 그 방식을 쓴다.
+
+### useBodyScrollLock
+
+활성화된 동안 `<body>` 스크롤을 잠근다. 여러 오버레이가 겹쳐도 참조 카운트로 한 번만 잠기고,
+마지막 하나가 닫힐 때 원래 상태로 되돌린다. 스크롤바 폭만큼 padding을 보정해 레이아웃이 흔들리지 않는다.
+
+iOS Safari는 `overflow: hidden`을 무시하므로 `position: fixed` + 스크롤 위치 복원 방식을 쓴다.
+
+```tsx
+useBodyScrollLock(isOpen);
+```
+
+### useInertBackground
+
+모달이 열린 동안 배경 형제 요소를 `aria-hidden` + `inert` 처리한다.
+`data-ds-layer` 속성이 붙은 오버레이 레이어(토스트 등)는 건드리지 않는다.
+
+```tsx
+useInertBackground(dialogRef, isOpen);
+```
+
+### usePrefersReducedMotion
+
+OS의 "동작 줄이기" 설정 여부를 반환한다. 자동 재생·자동 회전 UI를 끄는 데 쓴다.
+`matchMedia`가 없는 환경(SSR 등)에서는 `false`를 반환한다.
+
+```tsx
+const prefersReducedMotion = usePrefersReducedMotion();
+```
+
+---
+
+## 접근성
+
+- **키보드** — 모든 상호작용 요소가 키보드로 조작된다. Modal/DropdownMenu는 포커스 이동과 복원까지 처리한다.
+- **포커스 표시** — `:focus-visible`에 포커스 링을 그리고, Windows 고대비 모드(`forced-colors`)에서는
+  시스템 색 `outline`으로 보강한다.
+- **동작 줄이기** — `prefers-reduced-motion: reduce`면 등장 애니메이션과 전환을 끈다.
+  다만 Spinner/Skeleton은 "진행 중" 신호라 멈추지 않고 느리게 돈다.
+- **터치 타깃** — 캐루셀 인디케이터 등 작은 컨트롤도 히트 영역이 24×24px 이상이다 (WCAG 2.5.8).
+- **자동 갱신 콘텐츠** — 캐루셀 자동 재생과 토스트 자동 소멸은 hover/focus로 멈추고,
+  캐루셀은 명시적인 정지 버튼도 제공한다 (WCAG 2.2.1 / 2.2.2).
+
+---
+
+## 잘못 쓰면 알려줍니다
+
+개발 모드에서만 동작하고 프로덕션 빌드에서는 제거됩니다.
+
+| 상황 | 알림 |
+|------|------|
+| `styles.css` import 누락 | 콘솔 경고 1회 |
+| `<Tooltip>텍스트</Tooltip>`처럼 엘리먼트가 아닌 자식 | 무엇을 어떻게 고칠지 담은 오류 |
+| controlled ↔ uncontrolled 전환 | 콘솔 경고 |
+
 ---
 
 ## 설계 철학
 
-1. **Zero-config** — 설치 후 import만 하면 동작. CSS import나 ThemeProvider 설정 불필요.
+1. **거의 Zero-config** — 앱 진입점에서 `styles.css`를 한 줄 import하면 끝. ThemeProvider·Tailwind 설정은 필요 없다.
+   (개발 모드에서 이 import를 빠뜨리면 콘솔로 한 번 알려준다.)
 2. **접근성 기본 내장** — ARIA 속성, 키보드 내비게이션, 시맨틱 HTML이 기본 적용.
 3. **타입 안전** — TypeScript `strict: true` 환경에서 작성. 모든 Props 타입 export.
 4. **Polymorphic** — Layout 컴포넌트에 `as` prop 지원으로 렌더링 요소 자유 변경.
@@ -1259,15 +1509,34 @@ npm install
 # Storybook 실행 (http://localhost:6006)
 npm run storybook
 
-# 테스트
+# 테스트 (단위 + 접근성 axe 검사 + 토큰 대비 검사)
 npm test
 
 # 타입 체크
 npm run type-check
 
+# 린트 (react-hooks / jsx-a11y / typescript-eslint)
+npm run lint
+npm run lint:fix
+
 # 빌드
 npm run build
+
+# 번들 크기 확인 (한도 초과 시 실패)
+npm run size
+npm run size:why   # 무엇이 크기를 차지하는지 분석
 ```
+
+### 품질 게이트
+
+| 검사 | 잡는 것 |
+|------|---------|
+| `type-check` | 타입 오류 |
+| `lint` | 훅 규칙 위반, 접근성 정적 오류, `any`, 미사용 import |
+| `test` | 동작 회귀 + axe 접근성 위반 + 토큰 대비 미달 |
+| `size` | 번들 크기 회귀, 트리셰이킹 깨짐 |
+
+CI(`.github/workflows/ci.yml`)가 PR마다 네 가지를 모두 돌립니다.
 
 ---
 
