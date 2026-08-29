@@ -69,4 +69,66 @@ describe('Input', () => {
       expect(screen.getByText('이메일').closest('label')).toBeInTheDocument();
     });
   });
+
+
+  describe('id 자동 생성', () => {
+    it('should associate the label with the input when no id is given', () => {
+      render(<Input label="이메일" />);
+      const input = screen.getByLabelText('이메일');
+      expect(input).toBeInTheDocument();
+      expect(input.id).not.toBe('');
+    });
+
+    it('should give two id-less inputs distinct describedby targets', () => {
+      render(
+        <>
+          <Input label="첫 번째" error="첫 번째 오류" />
+          <Input label="두 번째" error="두 번째 오류" />
+        </>
+      );
+      const first = screen.getByLabelText('첫 번째');
+      const second = screen.getByLabelText('두 번째');
+
+      const firstDescribedBy = first.getAttribute('aria-describedby');
+      const secondDescribedBy = second.getAttribute('aria-describedby');
+      expect(firstDescribedBy).not.toBeNull();
+      expect(firstDescribedBy).not.toBe(secondDescribedBy);
+      expect(document.getElementById(firstDescribedBy as string)).toHaveTextContent('첫 번째 오류');
+      expect(document.getElementById(secondDescribedBy as string)).toHaveTextContent('두 번째 오류');
+    });
+
+    it('should keep an explicitly provided id', () => {
+      render(<Input id="custom" label="이메일" />);
+      expect(screen.getByLabelText('이메일')).toHaveAttribute('id', 'custom');
+    });
+  });
+
+
+  describe('aria-describedby 병합', () => {
+    it('should not drop its error description when the consumer supplies one', () => {
+      render(<Input label="이메일" error="형식 오류" aria-describedby="external-note" />);
+      const input = screen.getByLabelText('이메일');
+      const describedBy = input.getAttribute('aria-describedby') ?? '';
+      const errorId = document.querySelector('.ds-field-error')?.id ?? '';
+
+      expect(errorId).not.toBe('');
+      expect(describedBy.split(' ')).toContain(errorId);
+      expect(describedBy.split(' ')).toContain('external-note');
+    });
+
+    it('should keep the hint description alongside a consumer value', () => {
+      render(<Input label="비밀번호" hint="8자 이상" aria-describedby="external-note" />);
+      const describedBy =
+        screen.getByLabelText('비밀번호').getAttribute('aria-describedby') ?? '';
+      const hintId = document.querySelector('.ds-field-hint')?.id ?? '';
+
+      expect(describedBy.split(' ')).toContain(hintId);
+      expect(describedBy.split(' ')).toContain('external-note');
+    });
+
+    it('should not emit aria-describedby when there is nothing to describe', () => {
+      render(<Input label="이름" />);
+      expect(screen.getByLabelText('이름')).not.toHaveAttribute('aria-describedby');
+    });
+  });
 });

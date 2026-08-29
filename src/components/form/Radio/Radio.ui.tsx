@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useId } from 'react';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
 export interface RadioProps
@@ -19,6 +19,10 @@ export interface RadioProps
  */
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(
   ({ label, onChange, disabled, className, id, ...props }, ref) => {
+    // id 생략 시에도 레이블이 명시적으로 연결되도록 고유 id를 확보한다.
+    const autoId = useId();
+    const radioId = id ?? autoId;
+
     const wrapperClassNames = [
       'ds-radio-wrapper',
       disabled === true && 'ds-radio-wrapper--disabled',
@@ -32,11 +36,11 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
     }
 
     return (
-      <label className={wrapperClassNames} htmlFor={id}>
+      <label className={wrapperClassNames} htmlFor={radioId}>
         <input
           ref={ref}
           type="radio"
-          id={id}
+          id={radioId}
           className="ds-radio"
           disabled={disabled}
           onChange={handleChange}

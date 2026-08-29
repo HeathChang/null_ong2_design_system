@@ -1,7 +1,7 @@
-import { forwardRef } from 'react';
+import { forwardRef, useId } from 'react';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
-const SWITCH_SIZES = ['sm', 'md', 'lg'] as const;
+export const SWITCH_SIZES = ['sm', 'md', 'lg'] as const;
 type SwitchSize = (typeof SWITCH_SIZES)[number];
 
 export interface SwitchProps
@@ -23,6 +23,10 @@ export interface SwitchProps
  */
 export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
   ({ label, size = 'md', onChange, disabled, className, id, ...props }, ref) => {
+    // id 생략 시에도 레이블이 명시적으로 연결되도록 고유 id를 확보한다.
+    const autoId = useId();
+    const switchId = id ?? autoId;
+
     const wrapperClassNames = [
       'ds-switch-wrapper',
       `ds-switch-wrapper--${size}`,
@@ -37,12 +41,12 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     }
 
     return (
-      <label className={wrapperClassNames} htmlFor={id}>
+      <label className={wrapperClassNames} htmlFor={switchId}>
         <input
           ref={ref}
           type="checkbox"
           role="switch"
-          id={id}
+          id={switchId}
           className="ds-switch__input"
           disabled={disabled}
           onChange={handleChange}

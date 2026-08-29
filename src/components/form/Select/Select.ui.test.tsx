@@ -48,4 +48,77 @@ describe('Select', () => {
     render(<Select id="country" options={OPTIONS} disabled />);
     expect(screen.getByRole('combobox')).toBeDisabled();
   });
+
+
+  describe('id 자동 생성', () => {
+    it('should associate the label with the select when no id is given', () => {
+      render(<Select label="국가" options={[{ value: 'kr', label: '대한민국' }]} />);
+      expect(screen.getByLabelText('국가')).toBeInTheDocument();
+    });
+
+    it('should point aria-describedby at its own error message', () => {
+      render(
+        <Select label="국가" options={[]} error="국가를 선택하세요" />
+      );
+      const select = screen.getByLabelText('국가');
+      const describedBy = select.getAttribute('aria-describedby');
+      expect(describedBy).not.toBeNull();
+      expect(document.getElementById(describedBy as string)).toHaveTextContent('국가를 선택하세요');
+    });
+  });
+
+
+  describe('플레이스홀더', () => {
+    it('should start on the placeholder option', () => {
+      render(
+        <Select
+          label="국가"
+          placeholder="선택하세요"
+          options={[
+            { value: 'kr', label: '대한민국' },
+            { value: 'jp', label: '일본' },
+          ]}
+        />
+      );
+      const select = screen.getByLabelText('국가');
+      // 브라우저는 초기 선택에서 disabled 옵션을 건너뛴다 —
+      // 명시하지 않으면 첫 실제 옵션이 선택되어 플레이스홀더가 절대 보이지 않는다.
+      expect(select.value).toBe('');
+      expect(screen.getByRole('option', { name: '선택하세요' }).selected).toBe(true);
+    });
+
+    it('should respect an explicit defaultValue over the placeholder', () => {
+      render(
+        <Select
+          label="국가"
+          placeholder="선택하세요"
+          defaultValue="jp"
+          options={[
+            { value: 'kr', label: '대한민국' },
+            { value: 'jp', label: '일본' },
+          ]}
+        />
+      );
+      expect((screen.getByLabelText('국가')).value).toBe('jp');
+    });
+  });
+
+  describe('aria-describedby 병합', () => {
+    it('should keep its own error description when the consumer adds one', () => {
+      render(
+        <Select
+          label="국가"
+          options={[]}
+          error="국가를 선택하세요"
+          aria-describedby="external-note"
+        />
+      );
+      const select = screen.getByLabelText('국가');
+      const describedBy = select.getAttribute('aria-describedby') ?? '';
+      const errorId = document.querySelector('.ds-field-error')?.id ?? '';
+
+      expect(describedBy.split(' ')).toContain(errorId);
+      expect(describedBy.split(' ')).toContain('external-note');
+    });
+  });
 });
