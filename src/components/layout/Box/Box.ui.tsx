@@ -64,7 +64,7 @@ export function Box<TElement extends ElementType = 'div'>({
   style,
   ...props
 }: BoxProps<TElement>) {
-  const Component = (as ?? 'div') as ElementType;
+  const Component = (as ?? 'div');
 
   const inlineStyle: CSSProperties = {
     ...(padding !== undefined && { padding: SPACING[padding] }),

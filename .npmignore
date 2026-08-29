@@ -17,8 +17,10 @@ docs/
 # 개발 설정
 tsup.config.ts
 tsconfig.json
-.eslintrc*
+tsconfig.eslint.json
+eslint.config.*
 .prettierrc*
+.github/
 
 # 빌드 캐시
 .turbo/

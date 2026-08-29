@@ -35,18 +35,21 @@ export const Disabled: Story = {
   ),
 };
 
+/** Storybook의 render는 컴포넌트가 아니라 훅을 직접 못 쓴다. 이름 있는 컴포넌트로 분리한다. */
+function ControlledCheckboxDemo() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div>
+      <Checkbox
+        id="controlled"
+        label={`약관 동의 (${checked ? '동의함' : '동의 안 함'})`}
+        checked={checked}
+        onChange={setChecked}
+      />
+    </div>
+  );
+}
+
 export const Controlled: Story = {
-  render: () => {
-    const [checked, setChecked] = useState(false);
-    return (
-      <div>
-        <Checkbox
-          id="controlled"
-          label={`약관 동의 (${checked ? '동의함' : '동의 안 함'})`}
-          checked={checked}
-          onChange={setChecked}
-        />
-      </div>
-    );
-  },
+  render: () => <ControlledCheckboxDemo />,
 };

@@ -38,7 +38,7 @@ export function Stack<TElement extends ElementType = 'div'>({
   style,
   ...props
 }: StackProps<TElement>) {
-  const Component = (as ?? 'div') as ElementType;
+  const Component = (as ?? 'div');
 
   const inlineStyle: CSSProperties = {
     display: 'flex',

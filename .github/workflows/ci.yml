@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# 같은 브랜치에 새 커밋이 오면 이전 실행을 취소한다.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: 검증
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 타입 검사
+        run: npm run type-check
+
+      - name: 린트
+        run: npm run lint
+
+      - name: 테스트
+        run: npm test -- --ci
+
+      # build 안에 scripts/verify-package.mjs가 포함되어
+      # 실제 배포될 dist를 CJS/ESM 양쪽으로 불러보고 export·타입 일치까지 확인한다.
+      - name: 빌드 + 배포 산출물 검증
+        run: npm run build
+
+      - name: Storybook 빌드
+        run: npm run build-storybook -- --quiet
+
+      # 번들 크기는 사람이 눈으로 보면 반드시 놓친다.
+      # vision §3의 "50KB 미만" 목표를 CI가 대신 지킨다.
+      - name: 번들 크기 게이트
+        run: npx size-limit

@@ -25,18 +25,21 @@ export const Sizes: Story = {
   ),
 };
 
+/** Storybook의 render는 컴포넌트가 아니라 훅을 직접 못 쓴다. 이름 있는 컴포넌트로 분리한다. */
+function ControlledSwitchDemo() {
+  const [on, setOn] = useState(false);
+  return (
+    <Switch
+      id="ctrl"
+      label={on ? '켜짐' : '꺼짐'}
+      checked={on}
+      onChange={setOn}
+    />
+  );
+}
+
 export const Controlled: Story = {
-  render: () => {
-    const [on, setOn] = useState(false);
-    return (
-      <Switch
-        id="ctrl"
-        label={on ? '켜짐' : '꺼짐'}
-        checked={on}
-        onChange={setOn}
-      />
-    );
-  },
+  render: () => <ControlledSwitchDemo />,
 };
 
 export const Disabled: Story = {

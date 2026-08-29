@@ -52,7 +52,7 @@ export function Grid<TElement extends ElementType = 'div'>({
   style,
   ...props
 }: GridProps<TElement>) {
-  const Component = (as ?? 'div') as ElementType;
+  const Component = (as ?? 'div');
 
   const inlineStyle: CSSProperties = {
     display: 'grid',

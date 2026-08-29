@@ -20,33 +20,36 @@ export const Default: Story = {
   },
 };
 
-export const RadioGroup: Story = {
-  render: () => {
-    const [selected, setSelected] = useState('');
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <p style={{ margin: 0, fontSize: '14px', fontWeight: 500 }}>
-          선호하는 연락 방법
+/** Storybook의 render는 컴포넌트가 아니라 훅을 직접 못 쓴다. 이름 있는 컴포넌트로 분리한다. */
+function RadioGroupDemo() {
+  const [selected, setSelected] = useState('');
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <p style={{ margin: 0, fontSize: '14px', fontWeight: 500 }}>
+        선호하는 연락 방법
+      </p>
+      {['이메일', '전화', 'SMS'].map((option, index) => (
+        <Radio
+          key={option}
+          id={`contact-${index}`}
+          name="contact"
+          value={option}
+          label={option}
+          checked={selected === option}
+          onChange={setSelected}
+        />
+      ))}
+      {selected && (
+        <p style={{ fontSize: '12px', color: '#6b7280' }}>
+          선택: {selected}
         </p>
-        {['이메일', '전화', 'SMS'].map((option, index) => (
-          <Radio
-            key={option}
-            id={`contact-${index}`}
-            name="contact"
-            value={option}
-            label={option}
-            checked={selected === option}
-            onChange={setSelected}
-          />
-        ))}
-        {selected && (
-          <p style={{ fontSize: '12px', color: '#6b7280' }}>
-            선택: {selected}
-          </p>
-        )}
-      </div>
-    );
-  },
+      )}
+    </div>
+  );
+}
+
+export const RadioGroup: Story = {
+  render: () => <RadioGroupDemo />,
 };
 
 export const Disabled: Story = {

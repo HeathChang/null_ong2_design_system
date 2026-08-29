@@ -49,7 +49,7 @@ export function Flex<TElement extends ElementType = 'div'>({
   style,
   ...props
 }: FlexProps<TElement>) {
-  const Component = (as ?? 'div') as ElementType;
+  const Component = (as ?? 'div');
 
   const inlineStyle: CSSProperties = {
     display: 'flex',
