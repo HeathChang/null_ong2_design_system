@@ -4,7 +4,7 @@
  * 이 파일에서만 규칙을 끈다.
  */
 import { cloneElement, useEffect, useState } from 'react';
-import type { ReactElement, ReactNode, Ref } from 'react';
+import type { HTMLProps, ReactElement, ReactNode, Ref } from 'react';
 import {
   autoUpdate,
   flip,
@@ -16,10 +16,13 @@ import {
   useFocus,
   useHover,
   useInteractions,
+  useMergeRefs,
   useRole,
 } from '@floating-ui/react';
 import type { Placement } from '@floating-ui/react';
 import { assertSingleElement } from '../../../internal/assertSingleElement';
+import { getElementRef } from '../../../internal/getElementRef';
+import { mergeAriaDescribedBy } from '../../../internal/mergeAriaDescribedBy';
 
 export interface TooltipProps {
   /** 툴팁 내용 */
@@ -82,12 +85,24 @@ export function Tooltip({
     if (disabled) setOpen(false);
   }, [disabled]);
 
-  // children에 ref와 트리거 props 주입 (단일 React Element 가정)
+  /*
+   * 트리거가 원래 갖고 있던 props를 덮어쓰지 않고 합친다.
+   * 그냥 주입하면 소비자의 onFocus/onBlur·ref가 조용히 사라진다
+   * (`<Tooltip><input onBlur={validate} /></Tooltip>`에서 검증이 돌지 않던 문제).
+   * 핸들러는 floating-ui가 양쪽을 모두 호출하도록 합쳐주고, ref와 aria-describedby는 직접 합친다.
+   */
+  const childProps = child.props as HTMLProps<Element>;
+  const mergedRef = useMergeRefs([refs.setReference, getElementRef(child)]);
+  const ownDescribedBy = getReferenceProps()['aria-describedby'];
   const trigger = cloneElement(
     child,
     {
-      ref: refs.setReference as Ref<unknown>,
-      ...getReferenceProps(),
+      ...getReferenceProps(childProps),
+      'aria-describedby': mergeAriaDescribedBy(
+        typeof ownDescribedBy === 'string' ? ownDescribedBy : undefined,
+        childProps['aria-describedby'],
+      ),
+      ref: mergedRef as Ref<unknown>,
     } as Parameters<typeof cloneElement>[1],
   );
 
