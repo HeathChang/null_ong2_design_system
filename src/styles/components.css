@@ -311,9 +311,14 @@
   color: var(--ds-color-neutral-500);
 }
 
-.ds-input:hover:not(:disabled),
-.ds-textarea:hover:not(:disabled),
-.ds-select:hover:not(:disabled) {
+/*
+ * :where()로 특이도를 올리지 않는다. `:not(:disabled)`를 그대로 붙이면 hover 규칙이
+ * 뒤에 오는 :focus·에러 규칙보다 강해져서, 포인터가 올라가 있는 동안
+ * 포커스·에러 테두리가 회색으로 덮인다.
+ */
+.ds-input:hover:where(:not(:disabled)),
+.ds-textarea:hover:where(:not(:disabled)),
+.ds-select:hover:where(:not(:disabled)) {
   border-color: var(--ds-color-neutral-600);
 }
 
@@ -335,7 +340,10 @@
 
 .ds-input--error,
 .ds-textarea--error,
-.ds-select--error {
+.ds-select--error,
+.ds-input--error:hover,
+.ds-textarea--error:hover,
+.ds-select--error:hover {
   border-color: var(--ds-color-danger);
 }
 
