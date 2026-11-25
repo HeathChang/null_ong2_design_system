@@ -80,11 +80,11 @@ describe('Select', () => {
           ]}
         />
       );
-      const select = screen.getByLabelText('국가');
+      const select = screen.getByLabelText<HTMLSelectElement>('국가');
       // 브라우저는 초기 선택에서 disabled 옵션을 건너뛴다 —
       // 명시하지 않으면 첫 실제 옵션이 선택되어 플레이스홀더가 절대 보이지 않는다.
       expect(select.value).toBe('');
-      expect(screen.getByRole('option', { name: '선택하세요' }).selected).toBe(true);
+      expect(screen.getByRole<HTMLOptionElement>('option', { name: '선택하세요' }).selected).toBe(true);
     });
 
     it('should respect an explicit defaultValue over the placeholder', () => {
@@ -99,7 +99,7 @@ describe('Select', () => {
           ]}
         />
       );
-      expect((screen.getByLabelText('국가')).value).toBe('jp');
+      expect(screen.getByLabelText<HTMLSelectElement>('국가').value).toBe('jp');
     });
   });
 

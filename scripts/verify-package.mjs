@@ -10,6 +10,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
+import { build } from 'esbuild';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -148,6 +149,35 @@ check('React가 번들에 포함되지 않음', () => {
   );
   assert(!content.includes('ReactCurrentOwner'), 'React 내부 코드가 섞임');
 });
+
+// 11. 컴포넌트 하나만 가져오면 나머지가 실제로 떨어져 나가는가
+//     size-limit은 크기만 본다. 예산이 넉넉하면 작은 컴포넌트 몇 개가 딸려 와도 통과한다.
+//     (`X.displayName = ...` 최상위 대입 때문에 폼 컴포넌트 6종이 항상 포함되던 적이 있다)
+try {
+  const result = await build({
+    stdin: {
+      contents: `import { Button } from ${JSON.stringify(resolve(dist, 'index.mjs'))}; console.log(Button);`,
+      resolveDir: root,
+      loader: 'js',
+    },
+    bundle: true,
+    write: false,
+    format: 'esm',
+    minifySyntax: true,
+    external: ['react', 'react-dom', 'react/jsx-runtime', '@floating-ui/react'],
+    logLevel: 'silent',
+  });
+  const output = result.outputFiles[0]?.text ?? '';
+  const leaked = ['ds-input', 'ds-select', 'ds-checkbox', 'ds-modal', 'ds-carousel', 'ds-tabs'].filter(
+    (className) => output.includes(className),
+  );
+  if (!output.includes('ds-btn')) throw new Error('Button 자체가 번들에 없음');
+  if (leaked.length > 0) throw new Error(`Button만 가져왔는데 포함됨: ${leaked.join(', ')}`);
+  checks.push(`  ✅ 트리셰이킹 — Button만 import 시 ${(output.length / 1024).toFixed(1)}KB (압축 전)`);
+} catch (error) {
+  failures.push('트리셰이킹');
+  checks.push(`  ❌ 트리셰이킹 — ${error.message}`);
+}
 
 console.log('\n배포 산출물 검증\n');
 console.log(checks.join('\n'));

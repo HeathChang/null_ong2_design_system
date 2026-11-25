@@ -297,7 +297,8 @@
   line-height: var(--ds-line-height-normal);
   color: var(--ds-color-neutral-900);
   background-color: var(--ds-color-neutral-0);
-  border: var(--ds-border-width) solid var(--ds-border-color);
+  /* 입력창의 경계는 컨트롤을 식별하는 유일한 단서라 3:1 대비가 필요하다. */
+  border: var(--ds-border-width) solid var(--ds-color-control-border);
   border-radius: var(--ds-radius-md);
   transition: border-color var(--ds-transition-base),
     box-shadow var(--ds-transition-base);
@@ -313,7 +314,7 @@
 .ds-input:hover:not(:disabled),
 .ds-textarea:hover:not(:disabled),
 .ds-select:hover:not(:disabled) {
-  border-color: var(--ds-color-neutral-400);
+  border-color: var(--ds-color-neutral-600);
 }
 
 .ds-input:focus,
@@ -408,7 +409,7 @@
 .ds-radio {
   width: 1rem;
   height: 1rem;
-  border: 2px solid var(--ds-color-neutral-400);
+  border: 2px solid var(--ds-color-control-border);
   background-color: var(--ds-color-neutral-0);
   flex-shrink: 0;
   appearance: none;
@@ -550,7 +551,7 @@
 .ds-switch__track {
   position: relative;
   display: inline-block;
-  background-color: var(--ds-color-neutral-300);
+  background-color: var(--ds-color-control-border);
   border-radius: var(--ds-radius-full);
   transition: background-color var(--ds-transition-base);
   flex-shrink: 0;
@@ -560,7 +561,8 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  background-color: var(--ds-color-neutral-0);
+  /* neutral-0은 다크에서 어두운 표면색이 되어 손잡이가 트랙에 묻힌다. 역할 토큰을 쓴다. */
+  background-color: var(--ds-color-control-knob);
   border-radius: var(--ds-radius-full);
   box-shadow: var(--ds-shadow-sm);
   transition: transform var(--ds-transition-base);
@@ -1001,7 +1003,6 @@
   line-height: var(--ds-line-height-normal);
   max-width: 280px;
   z-index: var(--ds-z-popover);
-  pointer-events: none;
   box-shadow: var(--ds-shadow-md);
 }
 

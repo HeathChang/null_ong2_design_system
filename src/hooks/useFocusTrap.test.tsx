@@ -21,7 +21,14 @@ function Harness() {
       <button type="button" onClick={() => setIsOpen(true)}>
         열기
       </button>
-      {isOpen && <Trapped isActive />}
+      {isOpen && (
+        <>
+          <Trapped isActive />
+          <button type="button" onClick={() => setIsOpen(false)}>
+            닫기
+          </button>
+        </>
+      )}
     </>
   );
 }
@@ -59,6 +66,10 @@ describe('useFocusTrap', () => {
 
     await userEvent.click(opener);
     expect(screen.getByRole('button', { name: '첫 번째' })).toHaveFocus();
+
+    // 트랩이 해제되면 열기 전에 포커스가 있던 곳으로 돌아가야 한다.
+    await userEvent.click(screen.getByRole('button', { name: '닫기' }));
+    expect(opener).toHaveFocus();
   });
 
 

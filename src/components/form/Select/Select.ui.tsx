@@ -2,6 +2,7 @@ import { forwardRef, useId } from 'react';
 import type { SelectHTMLAttributes } from 'react';
 import { Label } from '../../typography/Label';
 import { mergeAriaDescribedBy } from '../../../internal/mergeAriaDescribedBy';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export interface SelectOption {
   value: string;
@@ -39,8 +40,8 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
  *   onChange={handleChange}
  * />
  */
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  (
+export const Select = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef<HTMLSelectElement, SelectProps>(function Select(
     {
       label,
       options,
@@ -54,7 +55,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       ...props
     },
     ref,
-  ) => {
+  ) {
     const hasError = error !== undefined && error !== '';
     /*
      * HTML 사양상 브라우저는 초기 선택에서 disabled 옵션을 건너뛴다.
@@ -130,7 +131,6 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         )}
       </div>
     );
-  },
+  }),
+  'Select',
 );
-
-Select.displayName = 'Select';

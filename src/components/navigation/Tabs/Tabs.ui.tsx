@@ -16,11 +16,22 @@ interface TabsContextValue {
   setValue: (value: string) => void;
   baseId: string;
   orientation: 'horizontal' | 'vertical';
-  /** 트리거가 마운트되며 자신의 value를 등록한다. 반환값은 해제 함수. */
-  registerTrigger: (value: string) => () => void;
+  /** 트리거가 마운트되며 자신의 value와 비활성 여부를 등록한다. 반환값은 해제 함수. */
+  registerTrigger: (value: string, isDisabled: boolean) => () => void;
 }
 
-const TabsContext = createContext<TabsContextValue | undefined>(undefined);
+const TabsContext = /* @__PURE__ */ createContext<TabsContextValue | undefined>(undefined);
+
+/**
+ * value를 id에 넣을 수 있는 형태로 바꾼다.
+ *
+ * `aria-controls`·`aria-labelledby`는 공백으로 구분한 id 목록이라
+ * value에 공백이 있으면(`"내 정보"`) 참조가 두 개의 없는 id로 쪼개진다.
+ * 문자 코드로 바꿔 서로 다른 value가 같은 id로 뭉치지 않게 한다.
+ */
+function toIdPart(value: string): string {
+  return value.replace(/[^\w-]/g, (char) => `_${char.charCodeAt(0).toString(16)}`);
+}
 
 function useTabsContext(component: string): TabsContextValue {
   const ctx = useContext(TabsContext);
@@ -58,20 +69,15 @@ function TabsRoot({
 
   // 어떤 트리거도 선택되지 않으면 roving tabindex가 무너져(전부 tabIndex=-1)
   // 탭 바 전체가 키보드로 도달 불가능해진다. 등록된 첫 트리거로 자동 보정한다.
-  const triggerValuesRef = useRef<string[]>([]);
+  const triggersRef = useRef<Array<{ value: string; isDisabled: boolean }>>([]);
   const [registryVersion, setRegistryVersion] = useState(0);
 
-  const registerTrigger = useCallback((triggerValue: string) => {
-    triggerValuesRef.current = [...triggerValuesRef.current, triggerValue];
+  const registerTrigger = useCallback((triggerValue: string, isDisabled: boolean) => {
+    const entry = { value: triggerValue, isDisabled };
+    triggersRef.current = [...triggersRef.current, entry];
     setRegistryVersion((version) => version + 1);
     return () => {
-      const index = triggerValuesRef.current.indexOf(triggerValue);
-      if (index !== -1) {
-        triggerValuesRef.current = [
-          ...triggerValuesRef.current.slice(0, index),
-          ...triggerValuesRef.current.slice(index + 1),
-        ];
-      }
+      triggersRef.current = triggersRef.current.filter((item) => item !== entry);
       setRegistryVersion((version) => version + 1);
     };
   }, []);
@@ -81,11 +87,12 @@ function TabsRoot({
   useEffect(() => {
     // controlled면 선택 값은 전적으로 소비자 책임이므로 건드리지 않는다.
     if (isControlled) return;
-    const values = triggerValuesRef.current;
-    if (values.length === 0) return;
-    if (values.includes(activeValue)) return;
-    const first = values[0];
-    if (first !== undefined) setActiveValue(first);
+    const triggers = triggersRef.current;
+    if (triggers.length === 0) return;
+    if (triggers.some((trigger) => trigger.value === activeValue)) return;
+    // 비활성 탭을 고르면 누를 수 없는 탭의 패널이 열린다. 누를 수 있는 첫 탭을 고른다.
+    const first = triggers.find((trigger) => !trigger.isDisabled) ?? triggers[0];
+    if (first !== undefined) setActiveValue(first.value);
   }, [isControlled, activeValue, setActiveValue, registryVersion]);
 
   const ctx = useMemo<TabsContextValue>(
@@ -158,7 +165,12 @@ function TabsTrigger({
   } = useTabsContext('Tabs.Trigger');
   const isSelected = active === value;
 
-  useEffect(() => registerTrigger(value), [registerTrigger, value]);
+  useEffect(
+    () => registerTrigger(value, disabled === true),
+    [registerTrigger, value, disabled],
+  );
+
+  const idPart = toIdPart(value);
 
   const classNames = [
     'ds-tabs__trigger',
@@ -209,13 +221,20 @@ function TabsTrigger({
     triggers[nextIndex]?.focus();
   }
 
+  /*
+   * 비활성 탭의 패널은 마운트되지 않는다 (TabsPanel이 null을 반환한다).
+   * 그 상태에서 aria-controls를 붙이면 존재하지 않는 id를 가리키게 되어
+   * 보조기술이 따라갈 곳 없는 참조가 남는다. 선택된 탭에만 건다.
+   */
+  const panelId = isSelected ? `${baseId}-panel-${idPart}` : undefined;
+
   return (
     <button
       type="button"
       role="tab"
-      id={`${baseId}-trigger-${value}`}
+      id={`${baseId}-trigger-${idPart}`}
       aria-selected={isSelected}
-      aria-controls={`${baseId}-panel-${value}`}
+      aria-controls={panelId}
       tabIndex={isSelected ? 0 : -1}
       disabled={disabled}
       className={classNames}
@@ -247,8 +266,8 @@ function TabsPanel({ value, children, className, ...props }: TabsPanelProps) {
   return (
     <div
       role="tabpanel"
-      id={`${baseId}-panel-${value}`}
-      aria-labelledby={`${baseId}-trigger-${value}`}
+      id={`${baseId}-panel-${toIdPart(value)}`}
+      aria-labelledby={`${baseId}-trigger-${toIdPart(value)}`}
       tabIndex={0}
       className={classNames}
       {...props}

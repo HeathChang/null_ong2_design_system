@@ -1,5 +1,7 @@
-import type { ElementType } from 'react';
-import type { PolymorphicProps } from '../../../types';
+import { forwardRef } from 'react';
+import type { ElementType, ForwardedRef } from 'react';
+import type { PolymorphicComponent, PolymorphicProps } from '../../../types';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export const CONTAINER_MAX_WIDTHS = ['sm', 'md', 'lg', 'xl', '2xl', 'full'] as const;
 type ContainerMaxWidth = (typeof CONTAINER_MAX_WIDTHS)[number];
@@ -9,7 +11,7 @@ interface ContainerOwnProps {
   maxWidth?: ContainerMaxWidth;
 }
 
-type ContainerProps<TElement extends ElementType = 'div'> = PolymorphicProps<
+export type ContainerProps<TElement extends ElementType = 'div'> = PolymorphicProps<
   TElement,
   ContainerOwnProps
 >;
@@ -22,13 +24,17 @@ type ContainerProps<TElement extends ElementType = 'div'> = PolymorphicProps<
  *   <main>페이지 콘텐츠</main>
  * </Container>
  */
-export function Container<TElement extends ElementType = 'div'>({
+export const Container = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef(function Container(
+  {
   as,
   maxWidth = 'lg',
   className,
   ...props
-}: ContainerProps<TElement>) {
-  const Component = (as ?? 'div');
+}: ContainerProps<ElementType>,
+  ref: ForwardedRef<unknown>,
+) {
+  const Component: ElementType = as ?? 'div';
 
   const classNames = [
     'ds-container',
@@ -38,5 +44,7 @@ export function Container<TElement extends ElementType = 'div'>({
     .filter(Boolean)
     .join(' ');
 
-  return <Component className={classNames} {...props} />;
-}
+  return <Component className={classNames} {...props} ref={ref} />;
+}),
+  'Container',
+) as unknown as PolymorphicComponent<'div', ContainerOwnProps>;

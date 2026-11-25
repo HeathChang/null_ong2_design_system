@@ -3,6 +3,51 @@
 이 프로젝트는 [Semantic Versioning](https://semver.org/lang/ko/)을 따릅니다.
 `1.0.0` 이전에는 마이너 버전에서 동작이 바뀔 수 있습니다.
 
+## [Unreleased]
+
+### 고침 — 동작
+
+- **`Tooltip`·`DropdownMenu`가 트리거의 기존 props를 덮어쓰던 문제.** 트리거에 준
+  `onClick`·`onFocus`·`onBlur`·`ref`·`id`가 경고 없이 사라졌습니다
+  (`<Tooltip><input onBlur={validate} /></Tooltip>`에서 검증이 돌지 않음). 이제 합칩니다.
+- **레이아웃 컴포넌트의 `ref`가 버려지던 문제.** `Box`·`Flex`·`Grid`·`Stack`·`Container`·`Text`는
+  타입으로는 `ref`를 받았지만 React 18 런타임에서 경고와 함께 무시됐습니다.
+- **`Tabs`의 `value`에 공백이 있으면** 탭과 패널의 연결(`aria-controls`·`aria-labelledby`)이 끊기던 문제.
+- **`Tabs`가 `defaultValue` 없이 첫 탭이 비활성일 때** 그 비활성 탭을 선택하던 문제.
+- 비활성 탭이 마운트되지 않은 패널을 `aria-controls`로 가리키던 문제.
+
+### 고침 — 트리셰이킹
+
+`forwardRef(...)` 호출과 `X.displayName = ...` 대입이 부수효과로 취급되어
+`import { Button }`만 해도 폼 컴포넌트 6종과 `Label`이 항상 딸려 왔습니다.
+
+| import | 이전 | 이후 |
+|--------|------|------|
+| `{ Button }` | 2.45 kB | **1.57 kB** |
+| `{ Modal }` | 3.88 kB | **2.62 kB** |
+
+size-limit 예산이 넉넉해 가려져 있던 문제라 예산을 실제 값에 맞춰 조이고,
+배포 산출물 검증에 "Button만 가져오면 다른 컴포넌트가 없어야 한다"를 추가했습니다.
+
+### 고침 — 접근성
+
+- **입력창·체크박스·라디오·스위치의 경계 대비 미달.** 입력 테두리 1.24:1 → 3.43:1.
+  `--ds-color-control-border` 토큰을 새로 두었습니다.
+- **포커스 링 대비 미달.** 반투명 링이 흰 배경에서 1.83:1이었습니다 → 3.68:1 (불투명).
+- **다크 모드에서 스위치 손잡이가 트랙에 묻히던 문제** (2.35:1 → 4.83:1).
+- **`Tooltip` 위로 포인터를 옮기면 사라지던 문제** (WCAG 1.4.13).
+
+### 추가
+
+- **`Modal`의 `aria-label`** — 제목 없는 다이얼로그에 이름을 줄 수 있습니다.
+- **Props 타입 공개**: `BoxProps` `FlexProps` `GridProps` `StackProps` `ContainerProps` `TextProps`
+  `ToastProviderProps` `ToastApi` `ShowToastOptions` `PolymorphicComponent`.
+
+### 변경
+
+- 입력창 테두리와 포커스 링이 대비 기준을 맞추느라 진해졌습니다.
+- `npm run type-check`가 테스트·스토리 파일까지 검사합니다.
+
 ## [0.3.1] — 2026-08-30
 
 ### 문서

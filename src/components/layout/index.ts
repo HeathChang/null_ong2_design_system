@@ -3,3 +3,8 @@ export { Container } from './Container';
 export { Flex } from './Flex';
 export { Grid } from './Grid';
 export { Stack } from './Stack';
+export type { BoxProps } from './Box';
+export type { ContainerProps } from './Container';
+export type { FlexProps } from './Flex';
+export type { GridProps } from './Grid';
+export type { StackProps } from './Stack';

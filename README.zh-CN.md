@@ -1000,6 +1000,7 @@ import { Tabs } from 'null_ong2-design-system';
 | `closeOnEscape` | `boolean` | `true` | 按 Esc 关闭 |
 | `showCloseButton` | `boolean` | `true` | 显示关闭按钮 |
 | `initialFocusRef` | `RefObject<HTMLElement>` | — | 打开时获得焦点的元素（默认为第一个可聚焦元素） |
+| `aria-label` | `string` | — | 无标题时对话框的可访问名称。设置了 `title` 时忽略 |
 
 ```tsx
 import { Modal, Button } from 'null_ong2-design-system';
@@ -1160,7 +1161,7 @@ function SaveButton() {
 
 ## 设计令牌
 
-所有视觉数值都定义为 CSS 自定义属性，引入样式表时会自动注入到 `:root`。
+所有视觉数值都定义为 CSS 自定义属性，引入 `styles.css` 后定义在 `:root` 上。
 
 ### 颜色
 
@@ -1376,9 +1377,9 @@ import { BUTTON_VARIANTS, BUTTON_SIZES } from 'null_ong2-design-system';
 
 | import | 体积 |
 |--------|------|
-| `{ Button }` | 约 2.4 kB |
-| `{ Modal }` | 约 3.8 kB |
-| 全量引入 | 约 30 kB |
+| `{ Button }` | 约 1.6 kB |
+| `{ Modal }` | 约 2.6 kB |
+| 全量引入 | 约 32 kB |
 | `styles.css` | 约 4.4 kB |
 
 可用 `npm run size` 自行确认，CI 会强制执行上限。
@@ -1479,7 +1480,7 @@ const prefersReducedMotion = usePrefersReducedMotion();
 
 ## 用错时会主动提示
 
-以下仅在开发模式生效，生产构建中会被移除。
+控制台警告仅在开发模式出现；子元素不合法时的错误在生产环境同样会抛出。
 
 | 情况 | 提示 |
 |------|------|

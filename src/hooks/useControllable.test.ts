@@ -70,10 +70,11 @@ describe('useControllable', () => {
     });
 
     it('should warn when switching from controlled to uncontrolled', () => {
+      const initialProps: { value: string | undefined } = { value: 'b' };
       const { rerender } = renderHook(
         ({ value }: { value: string | undefined }) =>
           useControllable<string>({ value, defaultValue: 'a' }),
-        { initialProps: { value: 'b' } },
+        { initialProps },
       );
 
       rerender({ value: undefined });

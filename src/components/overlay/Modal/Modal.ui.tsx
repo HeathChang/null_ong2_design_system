@@ -17,6 +17,12 @@ export interface ModalProps {
   onClose: () => void;
   /** 모달 제목 */
   title?: string;
+  /**
+   * 제목 없이 쓸 때 다이얼로그의 접근 가능한 이름.
+   * `title`이 있으면 제목이 이름이 되므로 무시된다.
+   * 둘 다 없으면 스크린리더가 "대화상자"라고만 읽어 무엇을 묻는 창인지 알 수 없다.
+   */
+  'aria-label'?: string;
   /** 모달 본문 */
   children: ReactNode;
   /** 푸터 (버튼 그룹 등) */
@@ -59,6 +65,7 @@ export function Modal({
   closeOnEscape = true,
   showCloseButton = true,
   initialFocusRef,
+  'aria-label': ariaLabel,
 }: ModalProps) {
   /*
    * Portal은 SSR 안전을 위해 마운트 후에야 자식을 렌더한다.
@@ -115,6 +122,7 @@ export function Modal({
           role="dialog"
           aria-modal="true"
           aria-labelledby={title !== undefined ? titleId : undefined}
+          aria-label={title === undefined ? ariaLabel : undefined}
           aria-describedby={bodyId}
           tabIndex={-1}
         >

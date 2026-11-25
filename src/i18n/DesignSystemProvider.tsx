@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { DEFAULT_LOCALE, DS_LOCALES, formatString } from './strings';
 import type { DsLocale, DsStrings } from './strings';
 
-const StringsContext = createContext<DsStrings | undefined>(undefined);
+const StringsContext = /* @__PURE__ */ createContext<DsStrings | undefined>(undefined);
 
 export interface DesignSystemProviderProps {
   children: ReactNode;

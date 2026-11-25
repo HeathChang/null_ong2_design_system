@@ -1,7 +1,9 @@
-import type { CSSProperties, ElementType } from 'react';
-import type { PolymorphicProps } from '../../../types';
+import { forwardRef } from 'react';
+import type { CSSProperties, ElementType, ForwardedRef } from 'react';
+import type { PolymorphicComponent, PolymorphicProps } from '../../../types';
 import type { SpacingKey } from '../../../tokens';
 import { SPACING } from '../../../tokens';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 interface FlexOwnProps {
   /** flex-direction */
@@ -22,7 +24,7 @@ interface FlexOwnProps {
   flex?: CSSProperties['flex'];
 }
 
-type FlexProps<TElement extends ElementType = 'div'> = PolymorphicProps<
+export type FlexProps<TElement extends ElementType = 'div'> = PolymorphicProps<
   TElement,
   FlexOwnProps
 >;
@@ -36,7 +38,9 @@ type FlexProps<TElement extends ElementType = 'div'> = PolymorphicProps<
  *   <span>오른쪽</span>
  * </Flex>
  */
-export function Flex<TElement extends ElementType = 'div'>({
+export const Flex = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef(function Flex(
+  {
   as,
   direction,
   align,
@@ -48,8 +52,10 @@ export function Flex<TElement extends ElementType = 'div'>({
   flex,
   style,
   ...props
-}: FlexProps<TElement>) {
-  const Component = (as ?? 'div');
+}: FlexProps<ElementType>,
+  ref: ForwardedRef<unknown>,
+) {
+  const Component: ElementType = as ?? 'div';
 
   const inlineStyle: CSSProperties = {
     display: 'flex',
@@ -64,5 +70,7 @@ export function Flex<TElement extends ElementType = 'div'>({
     ...style,
   };
 
-  return <Component style={inlineStyle} {...props} />;
-}
+  return <Component style={inlineStyle} {...props} ref={ref} />;
+}),
+  'Flex',
+) as unknown as PolymorphicComponent<'div', FlexOwnProps>;

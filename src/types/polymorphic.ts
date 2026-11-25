@@ -6,7 +6,7 @@
  *   <Box as="section" ...>
  *   <Box as={Link} href="..." ...>
  */
-import type { ComponentPropsWithRef, ElementType } from 'react';
+import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react';
 
 /** `as` prop 타입 정의 */
 type AsProp<TElement extends ElementType> = {
@@ -32,3 +32,16 @@ export type PolymorphicProps<
 /** Polymorphic ref 타입 */
 export type PolymorphicRef<TElement extends ElementType> =
   ComponentPropsWithRef<TElement>['ref'];
+
+/**
+ * `as`에 따라 props 타입이 달라지는 컴포넌트의 호출 시그니처.
+ *
+ * `forwardRef`는 제네릭을 보존하지 못해 결과를 이 타입으로 다시 좁힌다.
+ * (ref를 실제로 전달하려면 React 18에서는 forwardRef가 필요하다)
+ */
+export type PolymorphicComponent<
+  TDefault extends ElementType,
+  TProps = Record<string, never>,
+> = <TElement extends ElementType = TDefault>(
+  props: PolymorphicProps<TElement, TProps>,
+) => ReactElement | null;

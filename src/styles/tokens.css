@@ -43,6 +43,11 @@
   --ds-color-shimmer: rgb(255 255 255 / 0.6);
   /** 콘텐츠 위에 반투명하게 얹히는 표면 (캐루셀 화살표 등) */
   --ds-color-surface-translucent: rgb(255 255 255 / 0.85);
+  /**
+   * 입력창·체크박스·스위치 트랙처럼 "여기가 컨트롤"임을 알려주는 경계선.
+   * 구분용 테두리(--ds-border-color)와 달리 표면 대비 3:1 이상이어야 한다 (WCAG 1.4.11).
+   */
+  --ds-color-control-border: #848b98;
 
   /* ───── Colors: Semantic ───── */
   --ds-color-success: #22c55e;
@@ -148,8 +153,12 @@
   --ds-border-color: var(--ds-color-neutral-200);
 
   /* ───── Focus Ring ───── */
-  --ds-focus-ring-color: rgb(59 130 246 / 0.5);
-  --ds-focus-ring-danger-color: rgb(239 68 68 / 0.5);
+  /*
+   * 반투명(50%)이던 링은 흰 배경에서 1.83:1이라 어디에 포커스가 있는지 보이지 않았다.
+   * 불투명 색을 참조해 두 테마 모두 3:1 이상을 유지한다.
+   */
+  --ds-focus-ring-color: var(--ds-color-primary-500);
+  --ds-focus-ring-danger-color: var(--ds-color-danger);
   --ds-focus-ring: 0 0 0 3px var(--ds-focus-ring-color);
 
   /*
@@ -201,6 +210,7 @@
   --ds-color-overlay-backdrop: rgb(0 0 0 / 0.7);
   --ds-color-shimmer: rgb(255 255 255 / 0.08);
   --ds-color-surface-translucent: rgb(17 24 39 / 0.85);
+  --ds-color-control-border: #6b7280;
 
   /* ───── Colors: Semantic ───── */
   --ds-color-success: #22c55e;
@@ -230,10 +240,6 @@
   --ds-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
   --ds-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
   --ds-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6);
-
-  /* ───── Focus Ring ───── */
-  --ds-focus-ring-color: rgb(147 197 253 / 0.6);
-  --ds-focus-ring-danger-color: rgb(252 165 165 / 0.6);
   }
 }
 
@@ -270,6 +276,7 @@
   --ds-color-overlay-backdrop: rgb(0 0 0 / 0.7);
   --ds-color-shimmer: rgb(255 255 255 / 0.08);
   --ds-color-surface-translucent: rgb(17 24 39 / 0.85);
+  --ds-color-control-border: #6b7280;
 
   /* ───── Colors: Semantic ───── */
   --ds-color-success: #22c55e;
@@ -299,8 +306,4 @@
   --ds-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
   --ds-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
   --ds-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6);
-
-  /* ───── Focus Ring ───── */
-  --ds-focus-ring-color: rgb(147 197 253 / 0.6);
-  --ds-focus-ring-danger-color: rgb(252 165 165 / 0.6);
 }

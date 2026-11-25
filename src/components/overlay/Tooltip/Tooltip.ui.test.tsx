@@ -169,4 +169,17 @@ describe('Tooltip', () => {
       expect(describedBy.split(' ')).toContain(tooltip.id);
     });
   });
+
+  it('should stay open while the pointer rests on the tooltip itself', async () => {
+    render(
+      <Tooltip content="툴팁 내용" delay={0}>
+        <button>버튼</button>
+      </Tooltip>
+    );
+    await userEvent.hover(screen.getByRole('button', { name: '버튼' }));
+    const tooltip = await screen.findByRole('tooltip');
+
+    await userEvent.hover(tooltip);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+  });
 });

@@ -1000,6 +1000,7 @@ An overlay dialog. Opening it applies all of the following automatically.
 | `closeOnEscape` | `boolean` | `true` | Close on Esc |
 | `showCloseButton` | `boolean` | `true` | Show the close button |
 | `initialFocusRef` | `RefObject<HTMLElement>` | — | Element to focus on open (default: first focusable) |
+| `aria-label` | `string` | — | Accessible name for a dialog without a title. Ignored when `title` is set |
 
 ```tsx
 import { Modal, Button } from 'null_ong2-design-system';
@@ -1375,9 +1376,9 @@ What actually lands in your bundle (brotli, dependencies included):
 
 | import | Size |
 |--------|------|
-| `{ Button }` | ~2.4 kB |
-| `{ Modal }` | ~3.8 kB |
-| everything | ~30 kB |
+| `{ Button }` | ~1.6 kB |
+| `{ Modal }` | ~2.6 kB |
+| everything | ~32 kB |
 | `styles.css` | ~4.4 kB |
 
 Run `npm run size` to check it yourself; CI enforces the limits.
@@ -1478,7 +1479,7 @@ const prefersReducedMotion = usePrefersReducedMotion();
 
 ## It tells you when you misuse it
 
-These run in development only and are stripped from production builds.
+Console warnings appear in development only. The error for an invalid child is thrown in production too.
 
 | Situation | What you get |
 |------|------|

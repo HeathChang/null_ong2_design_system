@@ -1,4 +1,4 @@
-export type { PolymorphicProps, PolymorphicRef } from './polymorphic';
+export type { PolymorphicComponent, PolymorphicProps, PolymorphicRef } from './polymorphic';
 
 /** 공통 크기 타입 */
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

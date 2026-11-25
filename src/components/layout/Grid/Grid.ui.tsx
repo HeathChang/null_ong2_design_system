@@ -1,7 +1,9 @@
-import type { CSSProperties, ElementType } from 'react';
-import type { PolymorphicProps } from '../../../types';
+import { forwardRef } from 'react';
+import type { CSSProperties, ElementType, ForwardedRef } from 'react';
+import type { PolymorphicComponent, PolymorphicProps } from '../../../types';
 import type { SpacingKey } from '../../../tokens';
 import { SPACING } from '../../../tokens';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 interface GridOwnProps {
   /** 열 개수 또는 CSS grid-template-columns 값 */
@@ -20,7 +22,7 @@ interface GridOwnProps {
   justify?: CSSProperties['justifyItems'];
 }
 
-type GridProps<TElement extends ElementType = 'div'> = PolymorphicProps<
+export type GridProps<TElement extends ElementType = 'div'> = PolymorphicProps<
   TElement,
   GridOwnProps
 >;
@@ -40,7 +42,9 @@ function resolveGridTemplate(value: number | string): string {
  *   <div>셀 3</div>
  * </Grid>
  */
-export function Grid<TElement extends ElementType = 'div'>({
+export const Grid = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef(function Grid(
+  {
   as,
   columns,
   rows,
@@ -51,8 +55,10 @@ export function Grid<TElement extends ElementType = 'div'>({
   justify,
   style,
   ...props
-}: GridProps<TElement>) {
-  const Component = (as ?? 'div');
+}: GridProps<ElementType>,
+  ref: ForwardedRef<unknown>,
+) {
+  const Component: ElementType = as ?? 'div';
 
   const inlineStyle: CSSProperties = {
     display: 'grid',
@@ -70,5 +76,7 @@ export function Grid<TElement extends ElementType = 'div'>({
     ...style,
   };
 
-  return <Component style={inlineStyle} {...props} />;
-}
+  return <Component style={inlineStyle} {...props} ref={ref} />;
+}),
+  'Grid',
+) as unknown as PolymorphicComponent<'div', GridOwnProps>;

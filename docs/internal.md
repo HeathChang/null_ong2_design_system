@@ -127,24 +127,20 @@ npm audit fix
 2. `{Name}.ui.tsx` — 컴포넌트 구현
 3. `{Name}.ui.test.tsx` — 테스트 작성
 4. `{Name}.ui.stories.tsx` — Storybook 작성
-5. `index.ts` — barrel export
+5. `index.ts` — barrel export (Props 타입 포함)
 6. 상위 `index.ts` 업데이트
 7. `src/components/index.ts` 업데이트
 8. `src/index.ts` 업데이트
 
 ---
 
-## Phase 2 예정 컴포넌트
+## 예정 컴포넌트
 
-- Modal / Dialog
-- Tooltip
+Modal · Tooltip · Toast · Tabs · Badge · Avatar는 v0.2.0에서 추가됐다. 남은 것:
+
 - Popover
-- Toast / Notification
 - Table
-- Tabs
 - Accordion
-- Badge
-- Avatar
 - Breadcrumb
 - Pagination
 - DatePicker

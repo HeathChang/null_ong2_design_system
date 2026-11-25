@@ -79,6 +79,12 @@ const TEXT_PAIRS: Array<[string, string, string]> = [
 
 const UI_PAIRS: Array<[string, string, string]> = [
   ['체크 표시', '--ds-color-control-knob', '--ds-color-primary-500'],
+  ['입력창·체크박스 경계', '--ds-color-control-border', '--ds-color-neutral-0'],
+  ['스위치 손잡이 (꺼짐)', '--ds-color-control-knob', '--ds-color-control-border'],
+  ['스위치 손잡이 (켜짐)', '--ds-color-control-knob', '--ds-color-primary-500'],
+  // 포커스 링 토큰은 아래 두 색을 참조한다 (--ds-focus-ring-color / -danger-color).
+  ['포커스 링', '--ds-color-primary-500', '--ds-color-neutral-0'],
+  ['포커스 링 (danger)', '--ds-color-danger', '--ds-color-neutral-0'],
 ];
 
 describe('디자인 토큰', () => {
@@ -108,6 +114,13 @@ describe('디자인 토큰', () => {
       (token) => token.startsWith('--ds-color-neutral-') && DARK[token] === LIGHT[token],
     );
     expect(unchanged).toEqual([]);
+  });
+
+  it('should keep the focus ring opaque so it stays visible', () => {
+    // 반투명 링은 배경과 섞여 대비가 무너진다. 검증된 불투명 색을 참조해야 한다.
+    expect(LIGHT['--ds-focus-ring-color']).toBe('var(--ds-color-primary-500)');
+    expect(LIGHT['--ds-focus-ring-danger-color']).toBe('var(--ds-color-danger)');
+    expect(DARK['--ds-focus-ring-color']).toBeUndefined();
   });
 
   it('should ship the stylesheet-loaded sentinel', () => {

@@ -10,6 +10,7 @@ import {
   flip,
   FloatingPortal,
   offset,
+  safePolygon,
   shift,
   useDismiss,
   useFloating,
@@ -70,7 +71,13 @@ export function Tooltip({
     whileElementsMounted: autoUpdate,
   });
 
-  const hover = useHover(context, { delay: { open: delay, close: 0 }, enabled: !disabled });
+  // safePolygon: 트리거에서 툴팁으로 포인터를 옮기는 동안 닫지 않는다.
+  // 내용을 확대해서 읽거나 텍스트를 선택하려면 툴팁 위에 머물 수 있어야 한다 (WCAG 1.4.13).
+  const hover = useHover(context, {
+    delay: { open: delay, close: 0 },
+    enabled: !disabled,
+    handleClose: safePolygon(),
+  });
   const focus = useFocus(context, { enabled: !disabled });
   const dismiss = useDismiss(context);
   // useRole이 트리거의 aria-describedby와 툴팁의 id를 같은 값으로 연결한다.

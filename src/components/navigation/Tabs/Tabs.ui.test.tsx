@@ -139,4 +139,54 @@ describe('Tabs', () => {
       expect(screen.getByRole('tab', { name: 'A' })).toHaveFocus();
     });
   });
+
+  describe('탭과 패널의 연결', () => {
+    it('should point aria-controls only at a panel that exists', () => {
+      renderTabs('a');
+      const selected = screen.getByRole('tab', { name: 'A' });
+      const controls = selected.getAttribute('aria-controls');
+
+      expect(controls).not.toBeNull();
+      expect(document.getElementById(controls as string)).toBe(screen.getByRole('tabpanel'));
+      // 비활성 탭의 패널은 마운트되지 않으므로 가리킬 대상이 없다.
+      expect(screen.getByRole('tab', { name: 'B' })).not.toHaveAttribute('aria-controls');
+    });
+
+    it('should keep the references intact when a value contains spaces', () => {
+      render(
+        <Tabs.Root defaultValue="내 정보">
+          <Tabs.List aria-label="섹션">
+            <Tabs.Trigger value="내 정보">내 정보</Tabs.Trigger>
+            <Tabs.Trigger value="내 설정">내 설정</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Panel value="내 정보">정보 패널</Tabs.Panel>
+          <Tabs.Panel value="내 설정">설정 패널</Tabs.Panel>
+        </Tabs.Root>
+      );
+      const tab = screen.getByRole('tab', { name: '내 정보' });
+      // 공백이 id에 섞이면 이름 참조가 깨져 패널이 이름 없이 노출된다.
+      expect(screen.getByRole('tabpanel', { name: '내 정보' })).toHaveAttribute(
+        'id',
+        tab.getAttribute('aria-controls')
+      );
+      expect(tab.id).not.toMatch(/\s/);
+    });
+
+    it('should skip a disabled first tab when picking the default', () => {
+      render(
+        <Tabs.Root>
+          <Tabs.List aria-label="섹션">
+            <Tabs.Trigger value="a" disabled>
+              A
+            </Tabs.Trigger>
+            <Tabs.Trigger value="b">B</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Panel value="a">패널 A</Tabs.Panel>
+          <Tabs.Panel value="b">패널 B</Tabs.Panel>
+        </Tabs.Root>
+      );
+      expect(screen.getByRole('tab', { name: 'B' })).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText('패널 B')).toBeInTheDocument();
+    });
+  });
 });
