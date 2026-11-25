@@ -1,5 +1,6 @@
 import { forwardRef, useId } from 'react';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export interface CheckboxProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
@@ -15,8 +16,8 @@ export interface CheckboxProps
  * @example
  * <Checkbox label="이용약관에 동의합니다" checked={agreed} onChange={setAgreed} />
  */
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, onChange, disabled, className, id, ...props }, ref) => {
+export const Checkbox = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox({ label, onChange, disabled, className, id, ...props }, ref) {
     // id 생략 시에도 레이블이 명시적으로 연결되도록 고유 id를 확보한다.
     const autoId = useId();
     const checkboxId = id ?? autoId;
@@ -47,7 +48,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         {label !== undefined && <span>{label}</span>}
       </label>
     );
-  },
+  }),
+  'Checkbox',
 );
-
-Checkbox.displayName = 'Checkbox';

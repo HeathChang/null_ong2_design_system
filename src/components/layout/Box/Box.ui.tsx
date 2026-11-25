@@ -1,7 +1,9 @@
-import type { CSSProperties, ElementType } from 'react';
-import type { PolymorphicProps } from '../../../types';
+import { forwardRef } from 'react';
+import type { CSSProperties, ElementType, ForwardedRef } from 'react';
+import type { PolymorphicComponent, PolymorphicProps } from '../../../types';
 import type { RadiusKey, SpacingKey } from '../../../tokens';
 import { RADIUS, SPACING } from '../../../tokens';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 interface BoxOwnProps {
   /** 패딩 (4방향) */
@@ -32,7 +34,7 @@ interface BoxOwnProps {
   overflow?: CSSProperties['overflow'];
 }
 
-type BoxProps<TElement extends ElementType = 'div'> = PolymorphicProps<
+export type BoxProps<TElement extends ElementType = 'div'> = PolymorphicProps<
   TElement,
   BoxOwnProps
 >;
@@ -46,7 +48,9 @@ type BoxProps<TElement extends ElementType = 'div'> = PolymorphicProps<
  *   콘텐츠
  * </Box>
  */
-export function Box<TElement extends ElementType = 'div'>({
+export const Box = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef(function Box(
+  {
   as,
   padding,
   paddingX,
@@ -63,8 +67,10 @@ export function Box<TElement extends ElementType = 'div'>({
   overflow,
   style,
   ...props
-}: BoxProps<TElement>) {
-  const Component = (as ?? 'div');
+}: BoxProps<ElementType>,
+  ref: ForwardedRef<unknown>,
+) {
+  const Component: ElementType = as ?? 'div';
 
   const inlineStyle: CSSProperties = {
     ...(padding !== undefined && { padding: SPACING[padding] }),
@@ -95,5 +101,7 @@ export function Box<TElement extends ElementType = 'div'>({
     ...style,
   };
 
-  return <Component style={inlineStyle} {...props} />;
-}
+  return <Component style={inlineStyle} {...props} ref={ref} />;
+}),
+  'Box',
+) as unknown as PolymorphicComponent<'div', BoxOwnProps>;

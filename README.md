@@ -73,7 +73,7 @@ the package ships a `"use client"` directive.
 | ♿ **Accessible by default** | Keyboard operation, focus management, Windows high contrast, reduced motion. WCAG 2.1 AA contrast is verified by tests. |
 | 🌗 **Dark mode** | Follows the OS with no configuration, or take control with `.dark` / `[data-theme]`. |
 | 🌍 **Internationalised** | Built-in strings for `ko` `en` `ja` `zh`. Works without a provider. |
-| 📦 **Tree-shakable** | `import { Button }` costs about 2.4 kB (brotli). CI enforces the limits. |
+| 📦 **Tree-shakable** | `import { Button }` costs about 1.6 kB (brotli). CI enforces the limits. |
 | 🎨 **Token-driven** | Every visual value is a CSS variable — override them to theme the system. |
 | 🔍 **Type-safe** | Written under TypeScript `strict`, with every props type exported. |
 

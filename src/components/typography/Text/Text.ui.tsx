@@ -1,7 +1,9 @@
-import type { CSSProperties, ElementType } from 'react';
+import { forwardRef } from 'react';
+import type { CSSProperties, ElementType, ForwardedRef } from 'react';
 import type { FontSizeKey, FontWeightKey } from '../../../tokens';
-import type { PolymorphicProps } from '../../../types';
+import type { PolymorphicComponent, PolymorphicProps } from '../../../types';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../tokens';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export const TEXT_COLORS = [
   'default',
@@ -35,7 +37,7 @@ interface TextOwnProps {
   truncate?: boolean;
 }
 
-type TextProps<TElement extends ElementType = 'p'> = PolymorphicProps<
+export type TextProps<TElement extends ElementType = 'p'> = PolymorphicProps<
   TElement,
   TextOwnProps
 >;
@@ -47,7 +49,9 @@ type TextProps<TElement extends ElementType = 'p'> = PolymorphicProps<
  * <Text size="sm" color="muted">부가 설명</Text>
  * <Text as="span" weight="bold">강조 텍스트</Text>
  */
-export function Text<TElement extends ElementType = 'p'>({
+export const Text = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef(function Text(
+  {
   as,
   size = 'base',
   weight = 'normal',
@@ -57,8 +61,10 @@ export function Text<TElement extends ElementType = 'p'>({
   className,
   style,
   ...props
-}: TextProps<TElement>) {
-  const Component = (as ?? 'p');
+}: TextProps<ElementType>,
+  ref: ForwardedRef<unknown>,
+) {
+  const Component: ElementType = as ?? 'p';
 
   const inlineStyle: CSSProperties = {
     fontSize: FONT_SIZE[size],
@@ -75,5 +81,7 @@ export function Text<TElement extends ElementType = 'p'>({
 
   const classNames = ['ds-text', className].filter(Boolean).join(' ');
 
-  return <Component className={classNames} style={inlineStyle} {...props} />;
-}
+  return <Component className={classNames} style={inlineStyle} {...props} ref={ref} />;
+}),
+  'Text',
+) as unknown as PolymorphicComponent<'p', TextOwnProps>;

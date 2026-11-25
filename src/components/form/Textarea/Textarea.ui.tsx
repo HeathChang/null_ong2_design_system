@@ -2,6 +2,7 @@ import { forwardRef, useId } from 'react';
 import type { TextareaHTMLAttributes } from 'react';
 import { Label } from '../../typography/Label';
 import { mergeAriaDescribedBy } from '../../../internal/mergeAriaDescribedBy';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   /** 텍스트에리어 레이블 */
@@ -22,8 +23,8 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
  * @example
  * <Textarea label="설명" rows={5} placeholder="내용을 입력하세요" />
  */
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, hint, error, required, id, className, 'aria-describedby': ariaDescribedBy, ...props }, ref) => {
+export const Textarea = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea({ label, hint, error, required, id, className, 'aria-describedby': ariaDescribedBy, ...props }, ref) {
     const hasError = error !== undefined && error !== '';
     const autoId = useId();
     const textareaId = id ?? autoId;
@@ -71,7 +72,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
       </div>
     );
-  },
+  }),
+  'Textarea',
 );
-
-Textarea.displayName = 'Textarea';

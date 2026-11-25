@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import type { ButtonHTMLAttributes, FocusEvent, ReactNode } from 'react';
 import { Spinner } from '../../feedback/Spinner';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export const BUTTON_VARIANTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
 export const BUTTON_SIZES = ['sm', 'md', 'lg'] as const;
@@ -31,8 +32,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * <Button variant="primary" onClick={handleSubmit}>저장</Button>
  * <Button variant="danger" isLoading={isDeleting}>삭제</Button>
  */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
+export const Button = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     {
       variant = 'primary',
       size = 'md',
@@ -47,7 +48,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ...props
     },
     ref,
-  ) => {
+  ) {
     const isDisabled = disabled === true || isLoading;
 
     const nodeRef = useRef<HTMLButtonElement | null>(null);
@@ -132,7 +133,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  },
+  }),
+  'Button',
 );
-
-Button.displayName = 'Button';

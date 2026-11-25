@@ -1,6 +1,6 @@
 {
   "name": "null_ong2-design-system",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Production-ready React design system library",
   "keywords": [
     "react",
@@ -11,6 +11,14 @@
   ],
   "author": "null_ong2",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeathChang/null_ong2_design_system.git"
+  },
+  "homepage": "https://null-ong2-design-system-docs.vercel.app/",
+  "bugs": {
+    "url": "https://github.com/HeathChang/null_ong2_design_system/issues"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -48,7 +56,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit && tsc -p tsconfig.eslint.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "npm run build",
@@ -111,19 +119,19 @@
       "name": "JS — Button만 (트리셰이킹)",
       "path": "dist/index.mjs",
       "import": "{ Button }",
-      "limit": "3 kB"
+      "limit": "2 kB"
     },
     {
       "name": "JS — Modal만 (floating-ui 미포함)",
       "path": "dist/index.mjs",
       "import": "{ Modal }",
-      "limit": "6 kB"
+      "limit": "3.5 kB"
     },
     {
       "name": "JS — 폼 세트",
       "path": "dist/index.mjs",
       "import": "{ Input, Select, Checkbox, Button }",
-      "limit": "8 kB"
+      "limit": "3 kB"
     }
   ]
 }

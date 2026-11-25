@@ -1,5 +1,6 @@
 import { forwardRef, useId } from 'react';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export const SWITCH_SIZES = ['sm', 'md', 'lg'] as const;
 type SwitchSize = (typeof SWITCH_SIZES)[number];
@@ -21,8 +22,8 @@ export interface SwitchProps
  * @example
  * <Switch label="알림 받기" checked={enabled} onChange={setEnabled} />
  */
-export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
-  ({ label, size = 'md', onChange, disabled, className, id, ...props }, ref) => {
+export const Switch = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef<HTMLInputElement, SwitchProps>(function Switch({ label, size = 'md', onChange, disabled, className, id, ...props }, ref) {
     // id 생략 시에도 레이블이 명시적으로 연결되도록 고유 id를 확보한다.
     const autoId = useId();
     const switchId = id ?? autoId;
@@ -58,7 +59,6 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
         {label !== undefined && <span className="ds-switch__label">{label}</span>}
       </label>
     );
-  },
+  }),
+  'Switch',
 );
-
-Switch.displayName = 'Switch';

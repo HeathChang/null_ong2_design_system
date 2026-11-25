@@ -998,6 +998,7 @@ import { Tabs } from 'null_ong2-design-system';
 | `closeOnEscape` | `boolean` | `true` | ESC로 닫기 |
 | `showCloseButton` | `boolean` | `true` | 닫기 버튼 표시 |
 | `initialFocusRef` | `RefObject<HTMLElement>` | — | 열릴 때 포커스를 받을 요소 (기본: 첫 포커스 가능 요소) |
+| `aria-label` | `string` | — | 제목 없이 쓸 때 다이얼로그의 이름. `title`이 있으면 무시된다 |
 
 ```tsx
 import { Modal, Button } from 'null_ong2-design-system';
@@ -1154,7 +1155,7 @@ function SaveButton() {
 
 ## 디자인 토큰
 
-모든 시각적 값은 CSS 커스텀 프로퍼티(변수)로 정의되어 있습니다. import 시 자동으로 `:root`에 주입됩니다.
+모든 시각적 값은 CSS 커스텀 프로퍼티(변수)로 정의되어 있습니다. `styles.css`를 import하면 `:root`에 정의됩니다.
 
 ### 색상
 
@@ -1371,9 +1372,9 @@ import { BUTTON_VARIANTS, BUTTON_SIZES } from 'null_ong2-design-system';
 
 | import | 크기 |
 |--------|------|
-| `{ Button }` | ~2.3 kB |
-| `{ Modal }` | ~3.5 kB |
-| 전체 import | ~29.5 kB |
+| `{ Button }` | ~1.6 kB |
+| `{ Modal }` | ~2.6 kB |
+| 전체 import | ~32 kB |
 | `styles.css` | ~4.4 kB |
 
 `npm run size`로 직접 확인할 수 있고, CI가 상한을 강제합니다.
@@ -1475,7 +1476,7 @@ const prefersReducedMotion = usePrefersReducedMotion();
 
 ## 잘못 쓰면 알려줍니다
 
-개발 모드에서만 동작하고 프로덕션 빌드에서는 제거됩니다.
+콘솔 경고는 개발 모드에서만 나옵니다. 잘못된 자식에 대한 오류는 프로덕션에서도 던집니다.
 
 | 상황 | 알림 |
 |------|------|

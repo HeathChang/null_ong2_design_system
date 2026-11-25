@@ -1,9 +1,14 @@
 // Layout
 export { Box } from './layout/Box';
+export type { BoxProps } from './layout/Box';
 export { Container } from './layout/Container';
+export type { ContainerProps } from './layout/Container';
 export { Flex } from './layout/Flex';
+export type { FlexProps } from './layout/Flex';
 export { Grid } from './layout/Grid';
+export type { GridProps } from './layout/Grid';
 export { Stack } from './layout/Stack';
+export type { StackProps } from './layout/Stack';
 
 // Typography
 export { Heading } from './typography/Heading';
@@ -11,6 +16,7 @@ export type { HeadingProps } from './typography/Heading';
 export { Label } from './typography/Label';
 export type { LabelProps } from './typography/Label';
 export { Text } from './typography/Text';
+export type { TextProps } from './typography/Text';
 
 // Core UI
 export { Button } from './core/Button';
@@ -61,5 +67,6 @@ export type { DropdownMenuProps, DropdownMenuItem } from './overlay/DropdownMenu
 export { Modal } from './overlay/Modal';
 export type { ModalProps } from './overlay/Modal';
 export { ToastProvider, useToast } from './overlay/Toast';
+export type { ShowToastOptions, ToastApi, ToastProviderProps } from './overlay/Toast';
 export { Tooltip } from './overlay/Tooltip';
 export type { TooltipProps } from './overlay/Tooltip';

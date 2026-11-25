@@ -5,6 +5,7 @@ export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
 
 export { ToastProvider, useToast } from './Toast';
+export type { ShowToastOptions, ToastApi, ToastProviderProps } from './Toast';
 
 export { Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';

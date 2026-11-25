@@ -2,6 +2,7 @@ import { forwardRef, useId } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { Label } from '../../typography/Label';
 import { mergeAriaDescribedBy } from '../../../internal/mergeAriaDescribedBy';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** 입력 필드 레이블 */
@@ -23,8 +24,8 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
  * <Input label="이메일" type="email" placeholder="example@mail.com" required />
  * <Input label="비밀번호" type="password" error="비밀번호가 올바르지 않습니다" />
  */
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, hint, error, required, id, className, 'aria-describedby': ariaDescribedBy, ...props }, ref) => {
+export const Input = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef<HTMLInputElement, InputProps>(function Input({ label, hint, error, required, id, className, 'aria-describedby': ariaDescribedBy, ...props }, ref) {
     const hasError = error !== undefined && error !== '';
     // id 생략 시 레이블 연결이 끊기고 describedby id가 중복되므로 항상 고유 id를 확보한다.
     const autoId = useId();
@@ -73,7 +74,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  },
+  }),
+  'Input',
 );
-
-Input.displayName = 'Input';

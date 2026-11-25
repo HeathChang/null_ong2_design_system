@@ -1,7 +1,9 @@
-import type { CSSProperties, ElementType } from 'react';
-import type { PolymorphicProps } from '../../../types';
+import { forwardRef } from 'react';
+import type { CSSProperties, ElementType, ForwardedRef } from 'react';
+import type { PolymorphicComponent, PolymorphicProps } from '../../../types';
 import type { SpacingKey } from '../../../tokens';
 import { SPACING } from '../../../tokens';
+import { withDisplayName } from '../../../internal/withDisplayName';
 
 interface StackOwnProps {
   /** 자식 요소 간 간격 */
@@ -14,7 +16,7 @@ interface StackOwnProps {
   justify?: CSSProperties['justifyContent'];
 }
 
-type StackProps<TElement extends ElementType = 'div'> = PolymorphicProps<
+export type StackProps<TElement extends ElementType = 'div'> = PolymorphicProps<
   TElement,
   StackOwnProps
 >;
@@ -29,7 +31,9 @@ type StackProps<TElement extends ElementType = 'div'> = PolymorphicProps<
  *   <div>세 번째</div>
  * </Stack>
  */
-export function Stack<TElement extends ElementType = 'div'>({
+export const Stack = /* @__PURE__ */ withDisplayName(
+  /* @__PURE__ */ forwardRef(function Stack(
+  {
   as,
   spacing = 'md',
   direction = 'column',
@@ -37,8 +41,10 @@ export function Stack<TElement extends ElementType = 'div'>({
   justify,
   style,
   ...props
-}: StackProps<TElement>) {
-  const Component = (as ?? 'div');
+}: StackProps<ElementType>,
+  ref: ForwardedRef<unknown>,
+) {
+  const Component: ElementType = as ?? 'div';
 
   const inlineStyle: CSSProperties = {
     display: 'flex',
@@ -49,5 +55,7 @@ export function Stack<TElement extends ElementType = 'div'>({
     ...style,
   };
 
-  return <Component style={inlineStyle} {...props} />;
-}
+  return <Component style={inlineStyle} {...props} ref={ref} />;
+}),
+  'Stack',
+) as unknown as PolymorphicComponent<'div', StackOwnProps>;

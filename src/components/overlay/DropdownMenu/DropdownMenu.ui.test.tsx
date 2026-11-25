@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DropdownMenu } from './DropdownMenu.ui';
@@ -230,6 +231,48 @@ describe('DropdownMenu', () => {
     await userEvent.keyboard('{ArrowDown}');
     await waitFor(() => {
       expect(screen.getByRole('menuitem', { name: '항목 0' })).toHaveFocus();
+    });
+  });
+
+  describe('트리거가 원래 갖고 있던 props', () => {
+    it('should keep calling the trigger\'s own onClick and still open', async () => {
+      const handleClick = jest.fn();
+      render(
+        <DropdownMenu
+          trigger={<button onClick={handleClick}>메뉴</button>}
+          items={[{ key: 'a', label: '항목 A' }]}
+        />
+      );
+      await userEvent.click(screen.getByRole('button', { name: '메뉴' }));
+
+      expect(handleClick).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+
+    it('should keep the trigger\'s own ref', () => {
+      const ref = createRef<HTMLButtonElement>();
+      render(
+        <DropdownMenu
+          trigger={<button ref={ref}>메뉴</button>}
+          items={[{ key: 'a', label: '항목 A' }]}
+        />
+      );
+      expect(ref.current).toBe(screen.getByRole('button', { name: '메뉴' }));
+    });
+
+    it('should keep the trigger\'s own id and label the menu with it', async () => {
+      render(
+        <DropdownMenu
+          trigger={<button id="more-actions">메뉴</button>}
+          items={[{ key: 'a', label: '항목 A' }]}
+        />
+      );
+      const trigger = screen.getByRole('button', { name: '메뉴' });
+      expect(trigger).toHaveAttribute('id', 'more-actions');
+
+      await userEvent.click(trigger);
+      // id를 지켜도 메뉴의 이름 참조가 끊기면 안 된다.
+      expect(screen.getByRole('menu')).toHaveAttribute('aria-labelledby', 'more-actions');
     });
   });
 });

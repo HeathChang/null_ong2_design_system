@@ -58,6 +58,15 @@ export {
 
 // 타입 exports
 export type {
+  BoxProps,
+  ContainerProps,
+  FlexProps,
+  GridProps,
+  StackProps,
+  TextProps,
+  ShowToastOptions,
+  ToastApi,
+  ToastProviderProps,
   HeadingProps,
   LabelProps,
   ButtonProps,
@@ -139,6 +148,7 @@ export {
 
 // 공통 타입 exports
 export type {
+  PolymorphicComponent,
   PolymorphicProps,
   PolymorphicRef,
   Size,

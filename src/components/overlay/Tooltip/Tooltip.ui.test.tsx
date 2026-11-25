@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tooltip } from './Tooltip.ui';
@@ -120,5 +121,65 @@ describe('Tooltip', () => {
         )
       ).toThrow(/Fragment/);
     });
+  });
+
+  describe('트리거가 원래 갖고 있던 props', () => {
+    it('should keep calling the trigger\'s own focus and blur handlers', async () => {
+      const handleFocus = jest.fn();
+      const handleBlur = jest.fn();
+      render(
+        <Tooltip content="툴팁 내용" delay={0}>
+          <input aria-label="이름" onFocus={handleFocus} onBlur={handleBlur} />
+        </Tooltip>
+      );
+
+      await userEvent.tab();
+      expect(handleFocus).toHaveBeenCalledTimes(1);
+      // 우리 동작도 그대로여야 한다 — 덮어쓰기 대신 합치기.
+      expect(await screen.findByRole('tooltip')).toBeInTheDocument();
+
+      await userEvent.tab();
+      expect(handleBlur).toHaveBeenCalledTimes(1);
+    });
+
+    it('should keep the trigger\'s own ref', () => {
+      const ref = createRef<HTMLButtonElement>();
+      render(
+        <Tooltip content="툴팁 내용">
+          <button ref={ref}>버튼</button>
+        </Tooltip>
+      );
+      expect(ref.current).toBe(screen.getByRole('button', { name: '버튼' }));
+    });
+
+    it('should keep the trigger\'s own aria-describedby next to the tooltip id', async () => {
+      render(
+        <>
+          <Tooltip content="툴팁 내용" delay={0}>
+            <button aria-describedby="external-note">버튼</button>
+          </Tooltip>
+          <p id="external-note">외부 설명</p>
+        </>
+      );
+      await userEvent.tab();
+
+      const tooltip = await screen.findByRole('tooltip');
+      const describedBy = screen.getByRole('button', { name: '버튼' }).getAttribute('aria-describedby') ?? '';
+      expect(describedBy.split(' ')).toContain('external-note');
+      expect(describedBy.split(' ')).toContain(tooltip.id);
+    });
+  });
+
+  it('should stay open while the pointer rests on the tooltip itself', async () => {
+    render(
+      <Tooltip content="툴팁 내용" delay={0}>
+        <button>버튼</button>
+      </Tooltip>
+    );
+    await userEvent.hover(screen.getByRole('button', { name: '버튼' }));
+    const tooltip = await screen.findByRole('tooltip');
+
+    await userEvent.hover(tooltip);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
 });

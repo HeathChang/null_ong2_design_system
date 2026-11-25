@@ -274,4 +274,25 @@ describe('Modal', () => {
       expect(screen.getByRole('button', { name: '취소' })).toHaveFocus();
     });
   });
+
+  describe('접근 가능한 이름', () => {
+    it('should name a title-less dialog with aria-label', () => {
+      render(
+        <Modal isOpen onClose={() => {}} aria-label="이미지 미리보기">
+          본문
+        </Modal>
+      );
+      expect(screen.getByRole('dialog', { name: '이미지 미리보기' })).toBeInTheDocument();
+    });
+
+    it('should prefer the visible title over aria-label', () => {
+      render(
+        <Modal isOpen onClose={() => {}} title="삭제 확인" aria-label="무시되는 이름">
+          본문
+        </Modal>
+      );
+      const dialog = screen.getByRole('dialog', { name: '삭제 확인' });
+      expect(dialog).not.toHaveAttribute('aria-label');
+    });
+  });
 });

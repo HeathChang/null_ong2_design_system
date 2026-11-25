@@ -4,7 +4,7 @@
  * 이 파일에서만 규칙을 끈다.
  */
 import { cloneElement, useMemo, useRef, useState } from 'react';
-import type { ReactElement, ReactNode, Ref } from 'react';
+import type { HTMLProps, ReactElement, ReactNode, Ref } from 'react';
 import {
   autoUpdate,
   flip,
@@ -17,10 +17,12 @@ import {
   useFloating,
   useInteractions,
   useListNavigation,
+  useMergeRefs,
   useRole,
 } from '@floating-ui/react';
 import type { Placement } from '@floating-ui/react';
 import { assertSingleElement } from '../../../internal/assertSingleElement';
+import { getElementRef } from '../../../internal/getElementRef';
 
 export interface DropdownMenuItem {
   /** 메뉴 항목 식별 키 */
@@ -121,13 +123,25 @@ export function DropdownMenu({
     listNavigation,
   ]);
 
+  /*
+   * 트리거가 원래 갖고 있던 props를 덮어쓰지 않고 합친다.
+   * 그냥 주입하면 소비자의 onClick·ref·id가 조용히 사라진다.
+   * 핸들러는 floating-ui가 양쪽을 모두 호출하도록 합쳐주고, ref는 직접 합친다.
+   */
+  const triggerProps = triggerElement.props as HTMLProps<Element>;
+  const mergedRef = useMergeRefs([refs.setReference, getElementRef(triggerElement)]);
   const triggerEl = cloneElement(
     triggerElement,
     {
-      ref: refs.setReference as Ref<unknown>,
-      ...getReferenceProps(),
+      ...getReferenceProps(triggerProps),
+      ref: mergedRef as Ref<unknown>,
     } as Parameters<typeof cloneElement>[1],
   );
+
+  // 소비자의 id를 지키면 useRole이 메뉴에 걸어둔 aria-labelledby가 없는 id를 가리킨다.
+  // 실제 트리거 id로 다시 연결한다.
+  const menuLabelProps =
+    typeof triggerProps.id === 'string' ? { 'aria-labelledby': triggerProps.id } : {};
 
   function handleItemSelect(item: DropdownMenuItem) {
     if (item.disabled === true) return;
@@ -146,7 +160,7 @@ export function DropdownMenu({
               ref={refs.setFloating}
               className="ds-dropdown-menu"
               style={floatingStyles}
-              {...getFloatingProps()}
+              {...getFloatingProps(menuLabelProps)}
             >
               {items.map((item, index) => {
                 const itemClassNames = [

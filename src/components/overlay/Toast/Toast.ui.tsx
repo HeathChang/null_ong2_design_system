@@ -31,13 +31,13 @@ interface ToastItem {
   duration: number;
 }
 
-interface ShowToastOptions {
+export interface ShowToastOptions {
   variant?: ToastVariant;
   /** 자동 소멸 시간(ms). 0이면 수동 닫기만 가능 (기본: 3000ms) */
   duration?: number;
 }
 
-interface ToastApi {
+export interface ToastApi {
   show: (message: string, options?: ShowToastOptions) => string;
   success: (message: string, options?: Omit<ShowToastOptions, 'variant'>) => string;
   warning: (message: string, options?: Omit<ShowToastOptions, 'variant'>) => string;
@@ -46,7 +46,7 @@ interface ToastApi {
   dismiss: (id: string) => void;
 }
 
-const ToastContext = createContext<ToastApi | undefined>(undefined);
+const ToastContext = /* @__PURE__ */ createContext<ToastApi | undefined>(undefined);
 
 let idCounter = 0;
 function createToastId(): string {
@@ -54,7 +54,7 @@ function createToastId(): string {
   return `ds-toast-${idCounter}`;
 }
 
-interface ToastProviderProps {
+export interface ToastProviderProps {
   children: ReactNode;
   /** 토스트 표시 위치 (기본: bottom-right) */
   position?: ToastPosition;
